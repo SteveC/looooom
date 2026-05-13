@@ -7,6 +7,7 @@ class AuthPagesTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Sign in with Google"
     assert_select "input[type=password]", count: 0
+    assert_match "no-store", response.headers["Cache-Control"]
   end
 
   test "registration and password pages are not routed" do

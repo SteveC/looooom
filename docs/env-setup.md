@@ -12,6 +12,8 @@ APP_HOST=looo0om.com
 MAILER_FROM=hello@looo0om.com
 ```
 
+`APP_HOST` must exactly match the production domain users visit, including whether the domain is `looooom.com` or `looo0om.com`. OAuth redirects and session cookies are exact-host sensitive.
+
 Generate `SECRET_KEY_BASE` locally:
 
 ```bash
