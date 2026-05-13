@@ -66,7 +66,7 @@ end
 
 gem "devise", "~> 5.0"
 gem "stripe", "~> 19.1"
-gem "aws-sdk-s3", "~> 1.221"
+gem "aws-sdk-s3", "~> 1.222"
 gem "cloudflare-email", "~> 0.1.0"
 gem "sidekiq", "~> 8.1"
 gem "redis", ">= 4.0.1"
