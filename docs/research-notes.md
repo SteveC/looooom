@@ -29,3 +29,16 @@ The `cloudflare-email` gem exists and presents itself as a Rails integration for
 Source:
 
 * https://www.ruby-toolbox.com/projects/cloudflare-email
+
+## Admin Dashboard
+
+Research pass performed on May 13, 2026 before implementation.
+
+The app already stores the key operating signals in PostgreSQL: users, tickets, votes, feature usage events, subscriptions, and payments. A Rails-native admin namespace with Active Record aggregates is the cheapest and fastest implementation path for the current product shape. Adding a separate admin framework or external analytics service would introduce extra dependencies before there is enough admin complexity or event volume to justify it.
+
+Implementation direction:
+
+* Keep the dashboard behind the existing `ADMIN_EMAIL` environment variable.
+* Use the existing Rails layout and Tailwind classes.
+* Prefer direct aggregate queries and limited recent/top records.
+* Update the PRD so every future product feature considers whether it should add an admin dashboard signal.

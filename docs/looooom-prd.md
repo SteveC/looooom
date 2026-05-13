@@ -112,7 +112,7 @@ This document focuses on the Phase 1 and Phase 2 foundation so the system can be
 * Stripe integration for free and paid tiers.
 * File uploads to Cloudflare R2 via Active Storage.
 * Email notifications via Cloudflare Email Service.
-* Admin dashboard for ticket triage and moderation.
+* Admin dashboard for ticket triage, moderation, user visibility, billing visibility, and usage signals.
 * Basic analytics: feature usage, ticket volume, conversion events.
 
 ---
@@ -158,9 +158,27 @@ The system supports an external Evolution Loop:
 
 * `/` -> landing page
 * `/dashboard`
+* `/admin` -> env-configured admin dashboard
 * `/tickets`
 * `/tickets/new`
 * `/dashboard`
+
+### Admin Dashboard Requirements
+
+The admin dashboard is available only to the user whose email matches `ADMIN_EMAIL`. It must not be shown in navigation for normal signed-in users.
+
+The dashboard should reflect the current product surface. Every new feature that adds a model, usage event, workflow, billing state, or moderation concern should also add an admin dashboard signal when that signal would help operate the product or prioritize work.
+
+Current dashboard signals:
+
+* User counts and recently joined users.
+* Configured admin count for verifying `ADMIN_EMAIL`.
+* Ticket totals, open work, status counts, priority counts, top-voted tickets, and recent tickets.
+* Vote totals.
+* Seven-day usage event volume and top usage events.
+* Paid subscription count, subscription status counts, paid revenue, and recent payments.
+
+Future dashboard additions should prefer cheap Active Record aggregates from existing tables before adding an external analytics service. Add a dedicated reporting table only when raw queries become slow, hard to explain, or materially affect production request latency.
 
 ---
 

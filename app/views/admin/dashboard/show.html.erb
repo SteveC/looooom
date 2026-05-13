@@ -1,0 +1,189 @@
+<% content_for :title, "Admin dashboard" %>
+
+<div class="space-y-8">
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Admin</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight">Admin dashboard</h1>
+      <p class="mt-2 max-w-3xl text-slate-600">Key product, user, billing, and ticket signals for operating loom.</p>
+    </div>
+    <div class="rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+      <span class="font-medium text-slate-950">Admin email:</span>
+      <%= ENV["ADMIN_EMAIL"].presence || "Not configured" %>
+    </div>
+  </div>
+
+  <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <p class="text-sm font-medium text-slate-500">Users</p>
+      <p class="mt-2 text-3xl font-semibold"><%= @stats.fetch(:total_users) %></p>
+      <p class="mt-1 text-sm text-slate-600"><%= pluralize(@stats.fetch(:configured_admins), "configured admin") %></p>
+    </div>
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <p class="text-sm font-medium text-slate-500">Tickets</p>
+      <p class="mt-2 text-3xl font-semibold"><%= @stats.fetch(:total_tickets) %></p>
+      <p class="mt-1 text-sm text-slate-600"><%= pluralize(@stats.fetch(:open_tickets), "open item") %></p>
+    </div>
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <p class="text-sm font-medium text-slate-500">Votes</p>
+      <p class="mt-2 text-3xl font-semibold"><%= @stats.fetch(:total_votes) %></p>
+      <p class="mt-1 text-sm text-slate-600"><%= pluralize(@stats.fetch(:usage_events_7d), "usage event") %> in 7 days</p>
+    </div>
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <p class="text-sm font-medium text-slate-500">Paid revenue</p>
+      <p class="mt-2 text-3xl font-semibold"><%= number_to_currency(@stats.fetch(:paid_revenue_cents).to_i / 100.0) %></p>
+      <p class="mt-1 text-sm text-slate-600"><%= pluralize(@stats.fetch(:paid_subscriptions), "paid subscription") %></p>
+    </div>
+  </section>
+
+  <section class="grid gap-6 lg:grid-cols-3">
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <h2 class="text-lg font-semibold">Ticket status</h2>
+      <div class="mt-4 space-y-3">
+        <% Ticket::STATUSES.each do |status| %>
+          <div class="flex items-center justify-between gap-4 text-sm">
+            <span class="font-medium text-slate-700"><%= status.humanize %></span>
+            <span class="rounded bg-slate-100 px-2 py-1 font-semibold text-slate-900"><%= @ticket_status_counts.fetch(status, 0) %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <h2 class="text-lg font-semibold">Ticket priority</h2>
+      <div class="mt-4 space-y-3">
+        <% Ticket::PRIORITIES.each do |priority| %>
+          <div class="flex items-center justify-between gap-4 text-sm">
+            <span class="font-medium text-slate-700"><%= priority.humanize %></span>
+            <span class="rounded bg-slate-100 px-2 py-1 font-semibold text-slate-900"><%= @ticket_priority_counts.fetch(priority, 0) %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <h2 class="text-lg font-semibold">Subscriptions</h2>
+      <div class="mt-4 space-y-3">
+        <% if @subscription_status_counts.any? %>
+          <% @subscription_status_counts.sort.each do |status, count| %>
+            <div class="flex items-center justify-between gap-4 text-sm">
+              <span class="font-medium text-slate-700"><%= status.humanize %></span>
+              <span class="rounded bg-slate-100 px-2 py-1 font-semibold text-slate-900"><%= count %></span>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-sm text-slate-600">No subscriptions yet.</p>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-6 lg:grid-cols-2">
+    <div>
+      <h2 class="mb-3 text-lg font-semibold">Top tickets</h2>
+      <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+        <% @top_tickets.each do |ticket| %>
+          <%= link_to ticket, class: "block p-4 hover:bg-slate-50" do %>
+            <div class="flex items-center justify-between gap-4">
+              <p class="font-medium"><%= ticket.title %></p>
+              <span class="shrink-0 rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"><%= pluralize(ticket.votes_count, "vote") %></span>
+            </div>
+            <p class="mt-1 text-sm text-slate-600"><%= ticket.status.humanize %> by <%= ticket.user.email %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-lg font-semibold">Recent tickets</h2>
+      <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+        <% @recent_tickets.each do |ticket| %>
+          <%= link_to ticket, class: "block p-4 hover:bg-slate-50" do %>
+            <div class="flex items-center justify-between gap-4">
+              <p class="font-medium"><%= ticket.title %></p>
+              <span class="shrink-0 rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"><%= ticket.priority.humanize %></span>
+            </div>
+            <p class="mt-1 text-sm text-slate-600"><%= time_ago_in_words(ticket.created_at) %> ago by <%= ticket.user.email %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-6 lg:grid-cols-2">
+    <div>
+      <h2 class="mb-3 text-lg font-semibold">Recent users</h2>
+      <div class="overflow-hidden rounded-md border border-slate-200 bg-white">
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+          <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
+            <tr>
+              <th class="px-4 py-3">User</th>
+              <th class="px-4 py-3">Plan</th>
+              <th class="px-4 py-3">Joined</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <% @recent_users.each do |user| %>
+              <tr>
+                <td class="px-4 py-3">
+                  <p class="font-medium text-slate-950"><%= user.name.presence || user.email %></p>
+                  <p class="text-slate-600"><%= user.email %></p>
+                </td>
+                <td class="px-4 py-3 text-slate-700"><%= user.subscription&.plan&.humanize || "Free" %></td>
+                <td class="px-4 py-3 text-slate-700"><%= time_ago_in_words(user.created_at) %> ago</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-lg font-semibold">Usage events</h2>
+      <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+        <% if @popular_usage_events.any? %>
+          <% @popular_usage_events.each do |event_name, count| %>
+            <div class="flex items-center justify-between gap-4 p-4 text-sm">
+              <span class="font-medium text-slate-800"><%= event_name %></span>
+              <span class="rounded bg-slate-100 px-2 py-1 font-semibold text-slate-900"><%= count %></span>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="p-4 text-sm text-slate-600">No usage events in the last 7 days.</p>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="mb-3 text-lg font-semibold">Recent payments</h2>
+    <div class="overflow-hidden rounded-md border border-slate-200 bg-white">
+      <table class="min-w-full divide-y divide-slate-200 text-sm">
+        <thead class="bg-slate-100 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
+          <tr>
+            <th class="px-4 py-3">User</th>
+            <th class="px-4 py-3">Amount</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3">Created</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <% if @recent_payments.any? %>
+            <% @recent_payments.each do |payment| %>
+              <tr>
+                <td class="px-4 py-3 text-slate-700"><%= payment.user.email %></td>
+                <td class="px-4 py-3 font-medium text-slate-950"><%= number_to_currency(payment.amount_total.to_i / 100.0, unit: "#{payment.currency&.upcase || "USD"} ") %></td>
+                <td class="px-4 py-3 text-slate-700"><%= payment.status.humanize %></td>
+                <td class="px-4 py-3 text-slate-700"><%= time_ago_in_words(payment.created_at) %> ago</td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td class="px-4 py-3 text-slate-600" colspan="4">No payments yet.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

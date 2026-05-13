@@ -46,6 +46,8 @@ SENTRY_TRACES_SAMPLE_RATE=0.1
 
 `SENTRY_DSN` is optional. Sentry is external error monitoring: it records production exceptions and performance traces so you can see what broke after deploys. The app boots without it.
 
+`ADMIN_EMAIL` controls the `/admin` dashboard and admin navigation visibility. Set it to the exact Google account email that should operate the app.
+
 ## Services
 
 Set up these external services as needed:

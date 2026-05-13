@@ -5,6 +5,11 @@ Rails.application.routes.draw do
 
   get "dashboard", to: "dashboard#show"
 
+  namespace :admin do
+    root to: "dashboard#show"
+    get "dashboard", to: "dashboard#show"
+  end
+
   authenticate :user, ->(user) { user.admin? } do
     mount Sidekiq::Web => "/sidekiq"
   end

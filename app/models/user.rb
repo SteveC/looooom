@@ -12,6 +12,12 @@ class User < ApplicationRecord
   has_many :payments, dependent: :destroy
   has_one :subscription, dependent: :destroy
 
+  scope :configured_admin, lambda {
+    admin_email = ENV["ADMIN_EMAIL"].to_s.downcase
+
+    admin_email.present? ? where("LOWER(email) = ?", admin_email) : none
+  }
+
   def self.from_omniauth(auth)
     email = auth.info.email.to_s.downcase
     user = find_by(provider: auth.provider, uid: auth.uid) || find_or_initialize_by(email: email)
@@ -29,5 +35,13 @@ class User < ApplicationRecord
 
   def self.admin_email?(email)
     ENV["ADMIN_EMAIL"].present? && email.to_s.casecmp?(ENV.fetch("ADMIN_EMAIL"))
+  end
+
+  def admin?
+    self[:admin] || configured_admin?
+  end
+
+  def configured_admin?
+    self.class.admin_email?(email)
   end
 end

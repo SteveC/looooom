@@ -12,6 +12,11 @@ class ApplicationController < ActionController::Base
     redirect_to dashboard_path, alert: "Admin access required." unless current_user.admin?
   end
 
+  def require_configured_admin!
+    authenticate_user!
+    redirect_to dashboard_path, alert: "Admin access required." unless current_user.configured_admin?
+  end
+
   def track_usage(event_name, metadata = {})
     return unless current_user
 

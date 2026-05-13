@@ -22,6 +22,19 @@ class UserTest < ActiveSupport::TestCase
       user = User.from_omniauth(auth)
 
       assert_predicate user, :admin?
+      assert_predicate user, :configured_admin?
+    end
+  end
+
+  test "configured_admin follows the current admin email environment variable" do
+    user = users(:one)
+
+    with_env "ADMIN_EMAIL", user.email.upcase do
+      assert_predicate user, :configured_admin?
+    end
+
+    with_env "ADMIN_EMAIL", "someone-else@example.com" do
+      assert_not user.configured_admin?
     end
   end
 
