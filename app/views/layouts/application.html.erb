@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Evosite" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Evosite">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen bg-slate-50 text-slate-950">
+    <header class="border-b border-slate-200 bg-white">
+      <nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+        <%= link_to "EvoSite", root_path, class: "text-lg font-semibold tracking-tight" %>
+
+        <div class="flex items-center gap-4 text-sm font-medium text-slate-700">
+          <% if user_signed_in? %>
+            <%= link_to "Dashboard", dashboard_path, class: "hover:text-slate-950" %>
+            <%= link_to "Tickets", tickets_path, class: "hover:text-slate-950" %>
+            <% if current_user.admin? %>
+              <%= link_to "Evolution", admin_evolution_path, class: "hover:text-slate-950" %>
+            <% end %>
+            <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "rounded-md bg-slate-900 px-3 py-2 text-white hover:bg-slate-700" %>
+          <% else %>
+            <%= link_to "Sign in", new_user_session_path, class: "hover:text-slate-950" %>
+            <%= link_to "Sign up", new_user_registration_path, class: "rounded-md bg-slate-900 px-3 py-2 text-white hover:bg-slate-700" %>
+          <% end %>
+        </div>
+      </nav>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-5 py-8">
+      <% if notice.present? %>
+        <p class="mb-6 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" id="notice"><%= notice %></p>
+      <% end %>
+
+      <% if alert.present? %>
+        <p class="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" id="alert"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

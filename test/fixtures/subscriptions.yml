@@ -1,0 +1,15 @@
+one:
+  user: one
+  stripe_customer_id: cus_one
+  stripe_subscription_id:
+  status: free
+  plan: free
+  current_period_end:
+
+two:
+  user: two
+  stripe_customer_id: cus_two
+  stripe_subscription_id: sub_two
+  status: active
+  plan: pro
+  current_period_end: 2026-06-13 06:40:40

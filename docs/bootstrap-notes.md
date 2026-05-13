@@ -4,37 +4,35 @@
 
 * Repository path: `/Users/steve/looooom`
 * Git remote: `git@github.com:SteveC/looooom.git`
-* Local Ruby detected: `ruby 2.6.10p210`
-* Rails command: not installed for the active Ruby
-* Bundler detected: `1.17.2`
+* Homebrew Ruby used for the app: `ruby 4.0.3`
+* Rails version: `8.1.3`
+* App location: repository root
+* PostgreSQL was available locally and `bin/rails db:prepare` succeeded.
 
-Rails 8 cannot be generated with this active Ruby. Rails official guidance says Rails 8.0 and 8.1 require Ruby 3.2.0 or newer.
+The macOS system Ruby is still `2.6.10`, so local commands should prepend the Homebrew Ruby paths shown below.
 
-## Recommended Bootstrap
-
-Use a project-local Ruby manager before generating the Rails app:
+## Local Command Prefix
 
 ```bash
-brew install ruby-build rbenv
-rbenv install 3.4.8
-rbenv local 3.4.8
-gem install bundler rails
-rails new evosite --css=tailwind --database=postgresql
+PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/4.0.0/bin:$PATH"
 ```
 
-After generation, copy or keep these repository documents at the Rails app root as appropriate:
+## Bootstrap Performed
 
-* `AGENTS.md`
-* `docs/evosite-prd.md`
-* `docs/codex-evolution-prompt.md`
-* `docs/research-notes.md`
+```bash
+gem install rails -v 8.1.3
+rails new /tmp/evosite --css=tailwind --database=postgresql --skip-git
+rsync generated Rails files into /Users/steve/looooom
+bundle add devise stripe aws-sdk-s3 cloudflare-email sidekiq sentry-ruby sentry-rails omniauth omniauth-google-oauth2 omniauth-github
+```
 
-## First Rails Milestone
+`rugged` was intentionally not added because it required CMake/native extension setup and shelling out to `git` in isolated worktrees is simpler for the first evolution runner.
 
-1. Generate Rails 8 with PostgreSQL and Tailwind.
-2. Add Devise, OmniAuth providers, Stripe, Sidekiq, Sentry, R2 storage, and Cloudflare Email Service wiring.
-3. Create the Ticket, FeatureUsage, Subscription, and EvolutionLog models.
-4. Add a minimal dashboard and ticket CRUD.
-5. Add `EvolutionAnalysisJob` as a no-op prompt builder that records an `EvolutionLog`.
-6. Run tests and commit.
+## First Rails Milestone Status
 
+1. Rails 8 app generated with PostgreSQL and Tailwind.
+2. Devise, OmniAuth hooks, Stripe, Sidekiq, Sentry, R2 storage, and Cloudflare Email Service wiring added.
+3. `Ticket`, `FeatureUsage`, `Subscription`, and `EvolutionLog` models created.
+4. Landing page, dashboard, ticket CRUD, and admin evolution page added.
+5. `EvolutionAnalysisJob` creates prompt-only audit logs.
+6. `bin/ci` passes.

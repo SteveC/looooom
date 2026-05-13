@@ -75,12 +75,13 @@ gem "stripe"
 gem "aws-sdk-s3"
 gem "cloudflare-email"
 gem "sidekiq"
-gem "rugged"
 gem "sentry-ruby"
 gem "sentry-rails"
 ```
 
 Implementation note: `cloudflare-email` is new and Cloudflare Email Service is beta. Verify the gem, API path, limits, pricing, and Railway compatibility again before shipping production mail.
+
+Implementation note: first implementation uses shell commands for future git worktree operations instead of `rugged`; this avoids a native extension dependency until a stronger need appears.
 
 ---
 

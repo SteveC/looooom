@@ -6,6 +6,8 @@ Research pass performed on May 13, 2026 before writing the initial project docum
 
 Rails 8 is real and current, with RubyGems listing Rails 8.1.3 and 8.0.x releases. Rails Guides state that Rails 8.0 and 8.1 require Ruby 3.2.0 or newer. The local machine currently has system Ruby 2.6.10 active, so the Rails app should not be generated until a modern Ruby is installed or activated.
 
+Update from implementation: Homebrew Ruby 4.0.3 was already installed and successfully ran Rails 8.1.3, so the app was generated with that runtime while leaving the system Ruby untouched.
+
 Sources:
 
 * https://guides.rubyonrails.org/upgrading_ruby_on_rails.html
@@ -27,4 +29,3 @@ The `cloudflare-email` gem exists and presents itself as a Rails integration for
 Source:
 
 * https://www.ruby-toolbox.com/projects/cloudflare-email
-

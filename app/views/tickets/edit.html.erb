@@ -1,0 +1,14 @@
+<% content_for :title, "Editing ticket" %>
+
+<div class="max-w-2xl">
+  <h1 class="text-3xl font-semibold tracking-tight">Editing ticket</h1>
+
+  <div class="mt-6 rounded-md border border-slate-200 bg-white p-5">
+    <%= render "form", ticket: @ticket %>
+  </div>
+
+  <div class="mt-4 flex gap-4 text-sm font-medium">
+    <%= link_to "Show", @ticket, class: "text-slate-700 hover:text-slate-950" %>
+    <%= link_to "Back", tickets_path, class: "text-slate-700 hover:text-slate-950" %>
+  </div>
+</div>

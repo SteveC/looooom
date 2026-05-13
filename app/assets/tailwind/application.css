@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+main > form,
+main > h2 + form {
+  max-width: 28rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background: #ffffff;
+  padding: 1.25rem;
+}
+
+main h2 {
+  margin-bottom: 1rem;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+main form .field {
+  margin-bottom: 1rem;
+}
+
+main form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+main form input[type="email"],
+main form input[type="password"],
+main form input[type="text"] {
+  display: block;
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: #ffffff;
+}
+
+main form input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+main form input[type="submit"],
+main form button[type="submit"] {
+  border-radius: 0.375rem;
+  background: #0f172a;
+  padding: 0.65rem 1rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+main form input[type="submit"]:hover,
+main form button[type="submit"]:hover {
+  background: #334155;
+}
+
+main form + a,
+main form + p,
+main form ~ a {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 500;
+}

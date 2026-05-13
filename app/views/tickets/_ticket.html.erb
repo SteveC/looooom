@@ -1,0 +1,11 @@
+<div id="<%= dom_id ticket %>" class="min-w-0">
+  <div class="flex flex-wrap items-center gap-2">
+    <p class="truncate font-medium"><%= ticket.title %></p>
+    <span class="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"><%= ticket.status.humanize %></span>
+    <span class="rounded bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-800"><%= ticket.priority.humanize %></span>
+  </div>
+  <p class="mt-1 text-sm text-slate-600"><%= truncate(ticket.description, length: 150) %></p>
+  <% if current_user&.admin? %>
+    <p class="mt-2 text-xs text-slate-500">Submitted by <%= ticket.user.email %></p>
+  <% end %>
+</div>

@@ -1,0 +1,27 @@
+<% content_for :title, "Tickets" %>
+
+<div class="w-full">
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div>
+      <h1 class="text-3xl font-semibold tracking-tight">Tickets</h1>
+      <p class="mt-2 text-slate-600">Requests become the input stream for future evolution runs.</p>
+    </div>
+    <%= link_to "New ticket", new_ticket_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+  </div>
+
+  <div id="tickets" class="mt-6 divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+    <% if @tickets.any? %>
+      <% @tickets.each do |ticket| %>
+        <div class="flex flex-col justify-between gap-4 p-4 sm:flex-row sm:items-center">
+          <%= render ticket %>
+          <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <%= link_to "Open", ticket, class: "rounded-md bg-slate-100 px-3.5 py-2.5 text-center text-sm font-medium hover:bg-slate-200" %>
+            <%= link_to "Edit", edit_ticket_path(ticket), class: "rounded-md bg-slate-100 px-3.5 py-2.5 text-center text-sm font-medium hover:bg-slate-200" %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="p-8 text-center text-slate-600">No tickets yet.</p>
+    <% end %>
+  </div>
+</div>

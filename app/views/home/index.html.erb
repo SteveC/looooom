@@ -1,0 +1,33 @@
+<section class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+  <div>
+    <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Self-improving Rails product</p>
+    <h1 class="mt-3 max-w-3xl text-5xl font-semibold tracking-tight text-slate-950">EvoSite turns user tickets into product evolution.</h1>
+    <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
+      Start with a focused website, collect real requests and usage signals, then let controlled AI agents propose tested pull requests.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <% if user_signed_in? %>
+        <%= link_to "Open dashboard", dashboard_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+        <%= link_to "Create ticket", new_ticket_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
+      <% else %>
+        <%= link_to "Create account", new_user_registration_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+        <%= link_to "Sign in", new_user_session_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="grid gap-4">
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <p class="text-sm font-medium text-slate-500">Tickets captured</p>
+      <p class="mt-2 text-4xl font-semibold"><%= @ticket_count %></p>
+    </div>
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <p class="text-sm font-medium text-slate-500">Shipped requests</p>
+      <p class="mt-2 text-4xl font-semibold"><%= @shipped_count %></p>
+    </div>
+    <div class="rounded-md border border-slate-200 bg-white p-5">
+      <p class="text-sm font-medium text-slate-500">Evolution runs logged</p>
+      <p class="mt-2 text-4xl font-semibold"><%= @evolution_count %></p>
+    </div>
+  </div>
+</section>

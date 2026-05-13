@@ -1,0 +1,41 @@
+<div class="space-y-8">
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div>
+      <h1 class="text-3xl font-semibold tracking-tight">Evolution</h1>
+      <p class="mt-2 text-slate-600">Prompt generation and audit history for autonomous product changes.</p>
+    </div>
+    <%= button_to "Evolve now", admin_evolution_path, method: :post, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+  </div>
+
+  <section class="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+    <div>
+      <h2 class="mb-3 text-lg font-semibold">Open ticket signals</h2>
+      <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+        <% @open_tickets.each do |ticket| %>
+          <div class="p-4">
+            <p class="font-medium"><%= ticket.title %></p>
+            <p class="mt-1 text-sm text-slate-600"><%= ticket.priority.humanize %> priority by <%= ticket.user.email %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-lg font-semibold">Evolution logs</h2>
+      <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+        <% @evolution_logs.each do |log| %>
+          <article class="p-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <p class="font-medium"><%= log.trigger.humanize %></p>
+              <span class="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"><%= log.status.humanize %></span>
+            </div>
+            <p class="mt-2 text-sm text-slate-600"><%= log.summary.presence || "No summary yet." %></p>
+            <% if log.pull_request_url.present? %>
+              <%= link_to "Pull request", log.pull_request_url, class: "mt-3 inline-block text-sm font-medium text-emerald-700" %>
+            <% end %>
+          </article>
+        <% end %>
+      </div>
+    </div>
+  </section>
+</div>

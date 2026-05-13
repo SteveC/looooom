@@ -1,0 +1,38 @@
+<%= form_with(model: ticket, class: "contents") do |form| %>
+  <% if ticket.errors.any? %>
+    <div id="error_explanation" class="mb-5 rounded-md bg-red-50 px-3 py-2 text-red-600">
+      <h2 class="font-medium"><%= pluralize(ticket.errors.count, "error") %> stopped this ticket from being saved:</h2>
+      <ul class="ml-6 mt-2 list-disc text-sm">
+        <% ticket.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :title, class: "text-sm font-medium text-slate-700" %>
+    <%= form.text_field :title, class: ["mt-2 block w-full rounded-md border px-3 py-2 shadow-sm", {"border-slate-300 focus:outline-emerald-600": ticket.errors[:title].none?, "border-red-400 focus:outline-red-600": ticket.errors[:title].any?}], placeholder: "What should EvoSite improve?" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description, class: "text-sm font-medium text-slate-700" %>
+    <%= form.textarea :description, rows: 7, class: ["mt-2 block w-full rounded-md border px-3 py-2 shadow-sm", {"border-slate-300 focus:outline-emerald-600": ticket.errors[:description].none?, "border-red-400 focus:outline-red-600": ticket.errors[:description].any?}], placeholder: "Describe the bug, feature, or behavior you want." %>
+  </div>
+
+  <% if current_user&.admin? %>
+    <div class="my-5">
+      <%= form.label :status, class: "text-sm font-medium text-slate-700" %>
+      <%= form.select :status, Ticket::STATUSES.map { |status| [status.humanize, status] }, {}, class: "mt-2 block w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:outline-emerald-600" %>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :priority, class: "text-sm font-medium text-slate-700" %>
+    <%= form.select :priority, Ticket::PRIORITIES.map { |priority| [priority.humanize, priority] }, {}, class: "mt-2 block w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:outline-emerald-600" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "w-full cursor-pointer rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700 sm:w-auto" %>
+  </div>
+<% end %>

@@ -11,11 +11,22 @@ config/credentials/*.key
 # Logs and temp files
 log/*
 tmp/*
+!/log/.keep
+!/tmp/.keep
+!/tmp/pids/
+tmp/pids/*
+!/tmp/pids/.keep
 
 # Rails/build artifacts
 node_modules/
 storage/*
+!/storage/.keep
+tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
+app/assets/builds/*
+!/app/assets/builds/.keep
 public/assets/
 public/packs/
 public/vite/
-
+.bundle/
