@@ -49,6 +49,8 @@ SENTRY_TRACES_SAMPLE_RATE=0.1
 
 The admin dashboard includes a storage smoke test. In production, it tests Cloudflare R2 when `R2_BUCKET` is present or `ACTIVE_STORAGE_SERVICE=r2` is set. The test creates a 1-byte object, downloads it, and deletes it.
 
+The R2 Active Storage service sets AWS SDK checksum calculation and validation to `when_required`. Active Storage already sends `Content-MD5` on uploads; leaving the AWS SDK defaults can add a second checksum header that Cloudflare R2 rejects.
+
 ## Services
 
 Set up these external services as needed:
