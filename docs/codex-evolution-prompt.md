@@ -25,26 +25,26 @@ Stripe, Devise, Google OmniAuth, optional Sentry, Railway, Git, and GitHub.
 
 ## Runtime Contract
 
-The runner receives these values from its environment or orchestration layer, not
-from model-visible prompt text:
+Run from this repository and target the live loom app:
 
 ```yaml
-repo_root: "<absolute path>"
-app_base_url_env: "APP_BASE_URL"
+repo_root: "/Users/steve/looooom"
+app_base_url: "https://looooom.com"
 target_branch: "main"
 evolution_runner_token_env: "EVOLUTION_RUNNER_TOKEN"
 ```
 
-The shared secret is stored in `EVOLUTION_RUNNER_TOKEN`. Never print it, log it,
-commit it, include it in reports, or paste it into prompts. Use it only as an HTTP
-header when calling loom's evolution endpoints.
+The shared secret is stored in the local `.env` file as
+`EVOLUTION_RUNNER_TOKEN`. Never print it, log it, commit it, include it in
+reports, or paste it into prompts. Use it only as an HTTP header when calling
+loom's evolution endpoints.
 
 Fetch context:
 
 ```sh
 curl -fsS \
   -H "Authorization: Bearer ${EVOLUTION_RUNNER_TOKEN}" \
-  "${APP_BASE_URL}/admin/evolution/context.json"
+  "https://looooom.com/admin/evolution/context.json"
 ```
 
 The context endpoint returns:
@@ -78,7 +78,7 @@ curl -fsS \
   -H "Authorization: Bearer ${EVOLUTION_RUNNER_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"evolution_run":{"ticket_id":123,"status":"succeeded","branch_name":"main","summary":"Fixed ...","validation":"bin/rails test ..."}}' \
-  "${APP_BASE_URL}/admin/evolution/runs.json"
+  "https://looooom.com/admin/evolution/runs.json"
 ```
 
 When the report uses `status: "succeeded"` or `status: "merged"` with a linked
