@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+config/master.key
+config/credentials/*.key
+
+# Logs and temp files
+log/*
+tmp/*
+
+# Rails/build artifacts
+node_modules/
+storage/*
+public/assets/
+public/packs/
+public/vite/
+
