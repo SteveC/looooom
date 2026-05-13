@@ -53,6 +53,8 @@ The R2 Active Storage service sets AWS SDK checksum calculation and validation t
 
 The admin dashboard also includes a Stripe smoke test. It calls Stripe's read-only balance retrieval endpoint with `STRIPE_SECRET_KEY`; it does not create customers, checkout sessions, payment intents, refunds, or charges.
 
+The admin dashboard includes a Cloudflare Email Service smoke test that sends a real email to `steve@stevecoast.com`. It requires `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, and a verified `MAILER_FROM` sender address.
+
 ## Services
 
 Set up these external services as needed:

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get "dashboard", to: "dashboard#show"
     resource :storage_test, only: :create
     resource :stripe_test, only: :create
+    resource :cloudflare_email_test, only: :create
   end
 
   authenticate :user, ->(user) { user.admin? } do

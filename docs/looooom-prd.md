@@ -177,7 +177,7 @@ Current dashboard signals:
 * Vote totals.
 * Seven-day usage event volume and top usage events.
 * Paid subscription count, subscription status counts, paid revenue, and recent payments.
-* System test actions, beginning with an R2/Active Storage smoke test that writes, reads, and deletes a 1-byte file, plus a read-only Stripe balance retrieval test.
+* System test actions, beginning with an R2/Active Storage smoke test that writes, reads, and deletes a 1-byte file, a read-only Stripe balance retrieval test, and a manual Cloudflare Email Service send test to the configured operator address.
 
 Future dashboard additions should prefer cheap Active Record aggregates from existing tables before adding an external analytics service. Add a dedicated reporting table only when raw queries become slow, hard to explain, or materially affect production request latency.
 
