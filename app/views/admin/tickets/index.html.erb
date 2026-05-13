@@ -1,0 +1,48 @@
+<% content_for :title, "Ticket holding pen" %>
+
+<div class="space-y-6">
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Admin</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight">Ticket holding pen</h1>
+      <p class="mt-2 text-slate-600">Review pending, held, duplicate, rejected, and spam tickets before they enter the public board.</p>
+    </div>
+    <%= link_to "Admin dashboard", admin_root_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
+  </div>
+
+  <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+    <% if @tickets.any? %>
+      <% @tickets.each do |ticket| %>
+        <div class="p-5">
+          <div class="flex flex-col justify-between gap-4 lg:flex-row">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <%= link_to ticket.title, ticket, class: "font-semibold text-slate-950 hover:text-slate-700" %>
+                <span class="rounded bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800"><%= ticket.review_status.humanize %></span>
+                <span class="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"><%= ticket.priority.humanize %></span>
+              </div>
+              <p class="mt-2 text-sm leading-6 text-slate-700"><%= truncate(ticket.description, length: 260) %></p>
+              <p class="mt-2 text-xs text-slate-500">
+                Submitted by <%= ticket.user.email %><%= " - #{ticket.review_reason}" if ticket.review_reason.present? %>
+              </p>
+              <% if ticket.duplicate_ticket %>
+                <p class="mt-2 text-xs text-slate-500">Duplicate of <%= link_to ticket.duplicate_ticket.title, ticket.duplicate_ticket, class: "font-medium underline" %></p>
+              <% end %>
+            </div>
+
+            <div class="w-full max-w-md shrink-0 space-y-3">
+              <%= form_with(url: admin_ticket_path(ticket), method: :patch, class: "space-y-3") do |form| %>
+                <%= form.select :review_status, [["Accept", "accepted"], ["Hold", "held"], ["Spam", "spam"], ["Duplicate", "duplicate"], ["Reject", "rejected"]], { selected: ticket.review_status }, class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm" %>
+                <%= form.text_field :duplicate_ticket_id, class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm", placeholder: "Duplicate ticket ID, if needed" %>
+                <%= form.text_field :review_reason, class: "block w-full rounded-md border border-slate-300 px-3 py-2 text-sm", placeholder: "Reason" %>
+                <%= form.submit "Update review", class: "cursor-pointer rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="p-8 text-center text-slate-600">Nothing in the holding pen.</p>
+    <% end %>
+  </div>
+</div>

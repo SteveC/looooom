@@ -8,7 +8,15 @@
   </div>
 
   <h1 class="text-3xl font-semibold tracking-tight"><%= @ticket.title %></h1>
-  <p class="mt-2 text-sm text-slate-500">Submitted <%= time_ago_in_words(@ticket.created_at) %> ago</p>
+  <p class="mt-2 text-sm text-slate-500">
+    Submitted <%= time_ago_in_words(@ticket.created_at) %> ago by
+    <%= link_to @ticket.user.name.presence || @ticket.user.slug, user_path(@ticket.user), class: "font-medium text-slate-700 hover:text-slate-950" %>
+  </p>
+  <% unless @ticket.accepted? %>
+    <p class="mt-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+      Review status: <%= @ticket.review_status.humanize %><%= " - #{@ticket.review_reason}" if @ticket.review_reason.present? %>
+    </p>
+  <% end %>
 
   <div class="mt-8 whitespace-pre-wrap rounded-md border border-slate-200 bg-white p-5 leading-7 text-slate-800"><%= @ticket.description %></div>
 
@@ -21,9 +29,42 @@
     <% if current_user.admin? || @ticket.user == current_user %>
       <%= link_to "Edit", edit_ticket_path(@ticket), class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
     <% end %>
+    <% if @ticket.closed? %>
+      <%= button_to current_user.admin? ? "Reopen" : "Vote to reopen", reopen_ticket_path(@ticket), method: :post, class: "rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100" %>
+    <% end %>
     <%= link_to "Back", tickets_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
     <% if current_user.admin? || @ticket.user == current_user %>
       <%= button_to "Delete", @ticket, method: :delete, class: "rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 hover:bg-red-100", data: { turbo_confirm: "Delete this ticket?" } %>
     <% end %>
   </div>
+
+  <section class="mt-10">
+    <h2 class="text-xl font-semibold tracking-tight">Discussion</h2>
+    <div class="mt-4 divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+      <% if @comments.any? %>
+        <% @comments.each do |comment| %>
+          <div class="p-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
+              <%= link_to comment.user.name.presence || comment.user.slug, user_path(comment.user), class: "font-medium text-slate-700 hover:text-slate-950" %>
+              <span><%= time_ago_in_words(comment.created_at) %> ago</span>
+            </div>
+            <p class="mt-3 whitespace-pre-wrap leading-7 text-slate-800"><%= comment.body %></p>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="p-4 text-sm text-slate-600">No comments yet.</p>
+      <% end %>
+    </div>
+
+    <% if @ticket.commentable_by?(current_user) %>
+      <%= form_with(model: @comment, url: ticket_comments_path(@ticket), class: "mt-5") do |form| %>
+        <% if @comment.errors.any? %>
+          <p class="mb-3 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= @comment.errors.full_messages.to_sentence %></p>
+        <% end %>
+        <%= form.label :body, "Add a comment", class: "text-sm font-medium text-slate-700" %>
+        <%= form.textarea :body, rows: 4, class: "mt-2 block w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:outline-emerald-600" %>
+        <%= form.submit "Comment", class: "mt-3 cursor-pointer rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+      <% end %>
+    <% end %>
+  </section>
 </article>

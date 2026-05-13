@@ -34,15 +34,16 @@ loom is a product feedback application that collects user tickets, lets users vo
 Build the foundation so that within 8-12 weeks the system can:
 
 * Accept user tickets and feature requests.
-* Analyze usage data.
-* Let external Codex runs inspect tickets and propose code changes outside the web app.
+* Analyze usage data, ticket comments, votes, and review decisions.
+* Let external Codex runs inspect accepted high-signal tickets and propose code changes outside the web app.
 * Continuously optimize itself and discover monetization opportunities.
 
 ### Success Metrics For Phase 2+
 
 * Clear ticket and vote data for prioritizing product work.
 * External Codex runs can turn high-priority tickets into pull requests.
-* No OpenAI, Anthropic, or GitHub API keys are required inside the Rails app.
+* No GitHub API keys are required inside the Rails app.
+* OpenAI usage inside Rails is limited to product/content workflows such as ticket moderation, duplicate detection, batch triage, and future content generation. It must not write code or perform Git operations.
 
 ---
 
@@ -59,7 +60,7 @@ Build the foundation so that within 8-12 weeks the system can:
 | Payments | Stripe | Use `stripe-ruby` for subscriptions and one-time payments. |
 | Auth | Devise + OmniAuth | Google OAuth only for user-facing login. |
 | Deployment | Railway | Rails web process, worker process, Postgres, Redis. |
-| AI Coding Agents | Codex CLI outside the app | Runs externally against tickets and repo context. |
+| AI Coding Agents | Codex outside the app | Runs externally against tickets and repo context. No GitHub Actions are required for the MVP. |
 | Monitoring | Railway logs, optional Sentry | Sentry is optional error monitoring. |
 | Analytics | Built-in Postgres/Redis events, optional PostHog | Usage stats inform prioritization. |
 | Version Control | Git + GitHub | Used by external Codex workflows, not by the Rails app. |
@@ -106,14 +107,16 @@ This document focuses on the Phase 1 and Phase 2 foundation so the system can be
 
 * User authentication through Google OAuth.
 * Dashboard with usage stats.
-* Ticket and feature request system.
-* Voting on tickets.
-* Local safe-for-work content guardrails for tickets.
+* Ticket and feature request system with accepted, pending, held, spam, duplicate, and rejected review states.
+* Voting on tickets and closed-ticket reopen interest.
+* Ticket comments and public discussion.
+* Local safe-for-work content guardrails plus OpenAI moderation and batch ticket triage.
+* Public user pages that do not expose emails.
 * Stripe integration for free and paid tiers.
 * File uploads to Cloudflare R2 via Active Storage.
 * Email notifications via Cloudflare Email Service.
 * Admin dashboard for ticket triage, moderation, user visibility, billing visibility, and usage signals.
-* Basic analytics: feature usage, ticket volume, conversion events.
+* Basic analytics: feature usage, ticket volume, comment volume, conversion events, and evolution run history.
 
 ---
 
@@ -122,20 +125,22 @@ This document focuses on the Phase 1 and Phase 2 foundation so the system can be
 The system supports an external Evolution Loop:
 
 1. Trigger: external Codex run, scheduled outside the Rails app, or manual developer run.
-2. Analysis: Codex reads recent tickets, votes, and usage analytics.
+2. Analysis: Codex authenticates with a shared secret and reads accepted implementation candidates from `/admin/evolution/context.json`.
 3. Planning: Codex creates a bounded plan from tickets, user feedback, usage statistics, and repository context.
 4. Execution: Codex works in a local worktree outside the web process.
 5. Validation: Codex runs the full test suite and any relevant linters/security checks.
-6. Output: Codex creates a GitHub pull request with a clear description of changes.
+6. Output: Codex creates a GitHub pull request with a clear description of changes, then reports branch, PR URL, status, and validation back to `/admin/evolution/runs.json`.
 7. Later autonomy: auto-merge and Railway deploy when confidence is above the configured threshold and tests pass.
 
 ### Safety Mechanisms For MVP
 
 * All AI changes go through pull requests first.
 * Human approval is required before merge during the bootstrap phase, then can be removed once confidence thresholds and rollback automation are proven.
-* AI actions happen outside the Rails runtime.
+* Code-writing AI actions happen outside the Rails runtime.
 * Pull requests remain the audit trail.
 * No production secret exposure in prompts, logs, pull request bodies, or model context.
+* Rails stores an `EVOLUTION_RUNNER_TOKEN` shared secret for context/reporting endpoints only.
+* Rails stores `OPENAI_API_KEY` for moderation, embeddings, batch ticket triage, and future product/content generation only.
 
 ---
 
@@ -144,15 +149,21 @@ The system supports an external Evolution Loop:
 ### Models
 
 * `User`
-* `Ticket`: `title`, `description`, `status`, `priority`, `user_id`
+* `Ticket`: `title`, `description`, `status`, `priority`, `review_status`, duplicate link, review reason, review metadata, embeddings, `user_id`
 * `Vote`: user_id, ticket_id
+* `TicketComment`: ticket_id, user_id, body, hidden
 * `FeatureUsage`: user, event name, metadata, occurred_at
 * `Subscription`: Stripe customer/subscription references and billing state
+* `OpenaiBatchJob`: OpenAI Batch API IDs, status, files, metadata
+* `EvolutionRun`: external runner status, branch, PR URL, validation, ticket link
 
 ### Background Jobs
 
 * `SendEmailJob`
 * `SyncStripeJob`
+* `TicketTriageJob`
+* `SubmitTicketTriageBatchJob`
+* `PollOpenaiBatchJob`
 
 ### Initial Routes
 
@@ -161,6 +172,11 @@ The system supports an external Evolution Loop:
 * `/admin` -> env-configured admin dashboard
 * `/tickets`
 * `/tickets/new`
+* `/tickets/closed`
+* `/u/:slug`
+* `/admin/tickets`
+* `/admin/evolution/context.json`
+* `/admin/evolution/runs.json`
 * `/dashboard`
 
 ### Admin Dashboard Requirements
@@ -177,6 +193,8 @@ Current dashboard signals:
 * Vote totals.
 * Seven-day usage event volume and top usage events.
 * Paid subscription count, subscription status counts, paid revenue, and recent payments.
+* Ticket holding pen for pending, held, spam, duplicate, and rejected tickets.
+* Evolution run status and PR links when external runners report them.
 * System test actions, beginning with an R2/Active Storage smoke test that writes, reads, and deletes a 1-byte file, a read-only Stripe balance retrieval test, and a manual Cloudflare Email Service send test to the configured operator address.
 
 Future dashboard additions should prefer cheap Active Record aggregates from existing tables before adding an external analytics service. Add a dedicated reporting table only when raw queries become slow, hard to explain, or materially affect production request latency.
@@ -205,6 +223,14 @@ ADMIN_EMAIL=...
 ADMIN_NAME=loom Admin
 SENTRY_DSN=...                         # Optional
 SENTRY_TRACES_SAMPLE_RATE=0.1          # Optional
+OPENAI_API_KEY=...
+OPENAI_TICKET_TRIAGE_MODEL=gpt-5-mini
+OPENAI_MODERATION_MODEL=omni-moderation-latest
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+OPENAI_TICKET_BATCH_SIZE=50
+TICKET_DUPLICATE_SIMILARITY_THRESHOLD=0.91
+TICKET_IMPLEMENTATION_VOTE_THRESHOLD=2
+EVOLUTION_RUNNER_TOKEN=...
 ```
 
 ---

@@ -6,7 +6,10 @@
       <h1 class="text-3xl font-semibold tracking-tight">Tickets</h1>
       <p class="mt-2 text-slate-600">Vote on the requests that matter most.</p>
     </div>
-    <%= link_to "New ticket", new_ticket_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+    <div class="flex flex-wrap gap-3">
+      <%= link_to "Closed tickets", closed_tickets_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
+      <%= link_to "New ticket", new_ticket_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+    </div>
   </div>
 
   <div id="tickets" class="mt-6 divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
@@ -16,7 +19,9 @@
           <%= render ticket %>
           <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
             <%= link_to "Open", ticket, class: "rounded-md bg-slate-100 px-3.5 py-2.5 text-center text-sm font-medium hover:bg-slate-200" %>
-            <%= link_to "Edit", edit_ticket_path(ticket), class: "rounded-md bg-slate-100 px-3.5 py-2.5 text-center text-sm font-medium hover:bg-slate-200" %>
+            <% if ticket.editable_by?(current_user) %>
+              <%= link_to "Edit", edit_ticket_path(ticket), class: "rounded-md bg-slate-100 px-3.5 py-2.5 text-center text-sm font-medium hover:bg-slate-200" %>
+            <% end %>
           </div>
         </div>
       <% end %>

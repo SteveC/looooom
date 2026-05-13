@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  purpose: ticket_triage
+  openai_batch_id: batch_one
+  status: completed
+  input_file_id: file_input_one
+  output_file_id: file_output_one
+  error_file_id:
+  requested_at: 2026-05-13 09:48:59
+  completed_at: 2026-05-13 09:48:59
+  metadata: <%= {}.to_json %>
+
+two:
+  purpose: ticket_triage
+  openai_batch_id: batch_two
+  status: in_progress
+  input_file_id: file_input_two
+  output_file_id:
+  error_file_id:
+  requested_at: 2026-05-13 09:48:59
+  completed_at:
+  metadata: <%= {}.to_json %>

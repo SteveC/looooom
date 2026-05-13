@@ -8,6 +8,7 @@ module Admin
         configured_admins: User.configured_admin.count,
         total_tickets: Ticket.count,
         open_tickets: Ticket.openish.count,
+        pending_review_tickets: Ticket.pending_review.count,
         total_votes: Vote.count,
         usage_events_7d: FeatureUsage.recent.count,
         paid_subscriptions: Subscription.where(status: %w[active trialing]).count,

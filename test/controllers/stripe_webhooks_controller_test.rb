@@ -61,6 +61,38 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
     assert_equal "pro_monthly", record.plan
   end
 
+  test "records subscription invoice payment" do
+    user = users(:two)
+    invoice = stripe_object(
+      id: "in_live_new",
+      customer: "cus_two",
+      subscription: "sub_two",
+      payment_intent: "pi_invoice_new",
+      status: "paid",
+      amount_paid: 900,
+      amount_due: 900,
+      total: 900,
+      currency: "usd",
+      metadata: {}
+    )
+    event = stripe_event("invoice.payment_succeeded", invoice)
+
+    with_env("STRIPE_WEBHOOK_SECRET" => "whsec_123") do
+      stub_stripe_webhook(event) do
+        assert_difference("Payment.count") do
+          post stripe_webhook_url, params: "{}", headers: { "Stripe-Signature" => "sig" }
+        end
+      end
+    end
+
+    assert_response :success
+    payment = Payment.find_by!(stripe_invoice_id: "in_live_new")
+    assert_equal user, payment.user
+    assert_equal "subscription", payment.mode
+    assert_equal "paid", payment.status
+    assert_equal 900, payment.amount_total
+  end
+
   test "uses subscription metadata as plan for inline dynamic prices" do
     user = users(:two)
     subscription = stripe_object(

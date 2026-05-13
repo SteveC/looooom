@@ -39,6 +39,15 @@ GOOGLE_CLIENT_SECRET=
 ADMIN_EMAIL=
 ADMIN_NAME=loom Admin
 
+OPENAI_API_KEY=
+OPENAI_TICKET_TRIAGE_MODEL=gpt-5-mini
+OPENAI_MODERATION_MODEL=omni-moderation-latest
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+OPENAI_TICKET_BATCH_SIZE=50
+TICKET_DUPLICATE_SIMILARITY_THRESHOLD=0.91
+TICKET_IMPLEMENTATION_VOTE_THRESHOLD=2
+EVOLUTION_RUNNER_TOKEN=
+
 SENTRY_DSN=
 SENTRY_TRACES_SAMPLE_RATE=0.1
 ```
@@ -46,6 +55,14 @@ SENTRY_TRACES_SAMPLE_RATE=0.1
 `SENTRY_DSN` is optional. Sentry is external error monitoring: it records production exceptions and performance traces so you can see what broke after deploys. The app boots without it.
 
 `ADMIN_EMAIL` controls the `/admin` dashboard and admin navigation visibility. Set it to the exact Google account email that should operate the app.
+
+`OPENAI_API_KEY` is used only for product/content workflows inside Rails: ticket moderation, duplicate detection, and batch ticket triage. It is not used for code changes, Git operations, or GitHub access.
+
+`OPENAI_TICKET_TRIAGE_MODEL` defaults to `gpt-5-mini`. `OPENAI_MODERATION_MODEL` defaults to `omni-moderation-latest`, and `OPENAI_EMBEDDING_MODEL` defaults to `text-embedding-3-small`.
+
+`OPENAI_TICKET_BATCH_SIZE` controls how many pending tickets are sent per Batch API job. `TICKET_DUPLICATE_SIMILARITY_THRESHOLD` controls embedding-based duplicate detection. `TICKET_IMPLEMENTATION_VOTE_THRESHOLD` controls which accepted tickets appear in the external evolution runner context.
+
+`EVOLUTION_RUNNER_TOKEN` is a long shared secret for external runners. Runners call `/admin/evolution/context.json` with `Authorization: Bearer <token>` or `X-Evolution-Runner-Token`, then report work to `/admin/evolution/runs.json`. This token gives access to curated product context and run reporting only; it is not a GitHub token.
 
 The admin dashboard includes a storage smoke test. In production, it tests Cloudflare R2 when `R2_BUCKET` is present or `ACTIVE_STORAGE_SERVICE=r2` is set. The test creates a 1-byte object, downloads it, and deletes it.
 
@@ -101,8 +118,8 @@ BillingOffer.find_by!(key: "subscription").update!(amount_cents: 1200)
 
 6. Copy the webhook signing secret into `STRIPE_WEBHOOK_SECRET`.
 
-## Not Needed In The Rails App
+## Self-Improvement Credentials
 
-The self-improvement workflow runs outside this Rails app in Codex. The website only collects tickets and votes. It does not need `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or a GitHub API token.
+The self-improvement code-writing workflow runs outside this Rails app in Codex. The website collects tickets, votes, comments, review decisions, usage signals, and runner status. Rails may use `OPENAI_API_KEY` for product/content workflows, but it must not use that key for code changes.
 
 GitHub is still useful outside the app because the repository lives there and Railway can deploy from it. Codex can also use GitHub externally when it later turns tickets into branches or pull requests, but no GitHub secrets are required in the Rails runtime.

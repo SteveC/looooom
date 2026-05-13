@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ticket: one
+  status: opened_pr
+  branch_name: evolution/1-dark-mode
+  pull_request_url: https://github.com/SteveC/looooom/pull/1
+  summary: MyText
+  validation: MyText
+  runner_metadata: <%= {}.to_json %>
+  started_at: 2026-05-13 09:49:01
+  completed_at: 2026-05-13 09:49:01
+
+two:
+  ticket: two
+  status: failed
+  branch_name: evolution/2-dashboard
+  pull_request_url:
+  summary: MyText
+  validation: MyText
+  runner_metadata: <%= {}.to_json %>
+  started_at: 2026-05-13 09:49:01
+  completed_at: 2026-05-13 09:49:01

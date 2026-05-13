@@ -4,6 +4,9 @@ one:
   description: A user wants a darker interface for late-night use.
   status: open
   priority: normal
+  review_status: accepted
+  ai_review_metadata: <%= {}.to_json %>
+  comments_count: 1
   votes_count: 1
 
 two:
@@ -12,4 +15,7 @@ two:
   description: The dashboard should show the most important product signals.
   status: planned
   priority: high
+  review_status: accepted
+  ai_review_metadata: <%= {}.to_json %>
+  comments_count: 1
   votes_count: 0

@@ -1,0 +1,43 @@
+<% content_for :title, @user.name.presence || @user.slug %>
+
+<div class="space-y-8">
+  <section>
+    <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">User</p>
+    <h1 class="mt-2 text-3xl font-semibold tracking-tight"><%= @user.name.presence || @user.slug %></h1>
+  </section>
+
+  <section>
+    <h2 class="mb-3 text-lg font-semibold">Tickets</h2>
+    <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+      <% if @tickets.any? %>
+        <% @tickets.each do |ticket| %>
+          <%= link_to ticket, class: "block p-4 hover:bg-slate-50" do %>
+            <div class="flex items-center justify-between gap-4">
+              <p class="font-medium"><%= ticket.title %></p>
+              <span class="shrink-0 rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"><%= pluralize(ticket.votes_count, "vote") %></span>
+            </div>
+            <p class="mt-1 text-sm text-slate-600"><%= ticket.status.humanize %></p>
+          <% end %>
+        <% end %>
+      <% else %>
+        <p class="p-4 text-sm text-slate-600">No public tickets yet.</p>
+      <% end %>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="mb-3 text-lg font-semibold">Recent comments</h2>
+    <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+      <% if @comments.any? %>
+        <% @comments.each do |comment| %>
+          <%= link_to comment.ticket, class: "block p-4 hover:bg-slate-50" do %>
+            <p class="text-sm font-medium text-slate-950"><%= comment.ticket.title %></p>
+            <p class="mt-1 text-sm text-slate-600"><%= truncate(comment.body, length: 180) %></p>
+          <% end %>
+        <% end %>
+      <% else %>
+        <p class="p-4 text-sm text-slate-600">No public comments yet.</p>
+      <% end %>
+    </div>
+  </section>
+</div>

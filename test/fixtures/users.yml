@@ -2,16 +2,19 @@ one:
   email: one@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
   name: One User
+  slug: one-user
   admin: false
 
 two:
   email: two@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
   name: Two User
+  slug: two-user
   admin: false
 
 admin:
   email: admin@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
   name: Admin User
+  slug: admin-user
   admin: true

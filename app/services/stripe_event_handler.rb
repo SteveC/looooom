@@ -10,7 +10,7 @@ class StripeEventHandler
     when "customer.subscription.created", "customer.subscription.updated", "customer.subscription.deleted"
       sync_subscription(event.data.object)
     when "invoice.payment_succeeded", "invoice.payment_failed"
-      Rails.logger.info("stripe_invoice_event type=#{event.type} invoice_id=#{event.data.object.id}")
+      upsert_invoice_payment(event.data.object)
     else
       Rails.logger.info("stripe_event_ignored type=#{event.type}")
     end
@@ -72,11 +72,44 @@ class StripeEventHandler
     track(user, "stripe.subscription_synced", subscription_id: stripe_subscription.id, status: stripe_subscription.status)
   end
 
+  def upsert_invoice_payment(invoice)
+    user = find_user(invoice)
+    return unless user
+
+    payment = Payment.find_or_initialize_by(stripe_invoice_id: invoice.id)
+    payment.update!(
+      user: user,
+      stripe_customer_id: invoice.customer,
+      stripe_payment_intent_id: invoice_payment_intent(invoice),
+      status: invoice_status(invoice),
+      mode: "subscription",
+      amount_total: invoice_amount(invoice),
+      currency: invoice.currency
+    )
+
+    track(user, "stripe.invoice_payment_recorded", invoice_id: invoice.id, status: payment.status)
+  end
+
   def find_user(object)
     user_id = metadata_value(object, "user_id") || object.try(:client_reference_id)
     return User.find_by(id: user_id) if user_id.present?
 
     Subscription.find_by(stripe_customer_id: object.customer)&.user
+  end
+
+  def invoice_payment_intent(invoice)
+    invoice.try(:payment_intent) || invoice.try(:payment_intent_id)
+  end
+
+  def invoice_status(invoice)
+    return "paid" if event.type == "invoice.payment_succeeded"
+    return "failed" if event.type == "invoice.payment_failed"
+
+    invoice.try(:status).presence || "unknown"
+  end
+
+  def invoice_amount(invoice)
+    invoice.try(:amount_paid) || invoice.try(:amount_due) || invoice.try(:total)
   end
 
   def plan_name(stripe_subscription)

@@ -13,6 +13,10 @@
     </div>
   </div>
 
+  <div class="flex flex-wrap gap-3">
+    <%= link_to "Ticket holding pen", admin_tickets_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+  </div>
+
   <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <div class="rounded-md border border-slate-200 bg-white p-5">
       <p class="text-sm font-medium text-slate-500">Users</p>
@@ -22,7 +26,7 @@
     <div class="rounded-md border border-slate-200 bg-white p-5">
       <p class="text-sm font-medium text-slate-500">Tickets</p>
       <p class="mt-2 text-3xl font-semibold"><%= @stats.fetch(:total_tickets) %></p>
-      <p class="mt-1 text-sm text-slate-600"><%= pluralize(@stats.fetch(:open_tickets), "open item") %></p>
+      <p class="mt-1 text-sm text-slate-600"><%= pluralize(@stats.fetch(:open_tickets), "open item") %>, <%= pluralize(@stats.fetch(:pending_review_tickets), "in review") %></p>
     </div>
     <div class="rounded-md border border-slate-200 bg-white p-5">
       <p class="text-sm font-medium text-slate-500">Votes</p>

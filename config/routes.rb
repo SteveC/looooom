@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: "dashboard#show"
     get "dashboard", to: "dashboard#show"
+    resources :tickets, only: %i[index update]
+    get "evolution/context", to: "evolution#context", defaults: { format: :json }
+    post "evolution/runs", to: "evolution#create", defaults: { format: :json }
     resource :storage_test, only: :create
     resource :stripe_test, only: :create
     resource :cloudflare_email_test, only: :create
@@ -17,11 +20,20 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => "/sidekiq"
   end
 
+  get "u/:slug", to: "users#show", as: :user
+
   resources :tickets do
+    collection do
+      get :closed
+    end
+
     member do
       post :vote
       delete :vote, action: :unvote
+      post :reopen
     end
+
+    resources :comments, controller: "ticket_comments", only: :create
   end
   namespace :billing do
     resource :checkout, only: :create

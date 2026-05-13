@@ -10,6 +10,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get tickets_url
     assert_response :success
+    assert_select "a[href=?]", edit_ticket_path(tickets(:two)), false
   end
 
   test "should get new" do
@@ -24,6 +25,16 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to ticket_url(Ticket.last)
     assert_equal @user, Ticket.last.user
+    assert_equal "pending", Ticket.last.review_status
+  end
+
+  test "admin-created ticket is accepted immediately" do
+    sign_in users(:admin)
+
+    post tickets_url, params: { ticket: { description: "Admin-visible work.", priority: "normal", title: "Admin ticket" } }
+
+    assert_redirected_to ticket_url(Ticket.last)
+    assert_equal "accepted", Ticket.last.review_status
   end
 
   test "should reject unsafe ticket content" do
@@ -88,5 +99,25 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to ticket_url(tickets(:one))
     assert_equal 0, tickets(:one).reload.votes_count
+  end
+
+  test "closed tickets page shows closed accepted tickets" do
+    @ticket.update!(status: "closed")
+
+    get closed_tickets_url
+
+    assert_response :success
+    assert_select "h1", "Closed tickets"
+    assert_select "a[href=?]", ticket_path(@ticket)
+  end
+
+  test "admin can reopen closed ticket" do
+    sign_in users(:admin)
+    @ticket.update!(status: "closed")
+
+    post reopen_ticket_url(@ticket)
+
+    assert_redirected_to ticket_url(@ticket)
+    assert_equal "open", @ticket.reload.status
   end
 end

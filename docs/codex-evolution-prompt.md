@@ -37,6 +37,10 @@ error_summary:
 evolution_history:
   recent_changes: []
   reverted_changes: []
+runner_contract:
+  context_url: "/admin/evolution/context.json"
+  report_url: "/admin/evolution/runs.json"
+  authentication: "Authorization: Bearer <EVOLUTION_RUNNER_TOKEN>"
 constraints:
   daily_spend_remaining_usd: 0
   automerge_enabled: false
@@ -48,7 +52,7 @@ constraints:
 ## Required Workflow
 
 1. Inspect the repo before deciding what to change.
-2. Read `docs/looooom-prd.md`, `CLAUDE.md` if present, `AGENTS.md`, recent tickets, and relevant code.
+2. Read `docs/looooom-prd.md`, `CLAUDE.md` if present, `AGENTS.md`, recent accepted implementation-candidate tickets, comments, usage context, and relevant code.
 3. Choose one bounded improvement. Prefer:
    * A high-priority ticket affecting many users.
    * A regression or production error with a clear fix.
@@ -59,6 +63,7 @@ constraints:
 7. Update `CLAUDE.md` or project docs only when the change creates durable operational knowledge.
 8. Commit on a new branch using the `evolution/<ticket-id>-<short-slug>` naming pattern.
 9. Push the branch and open a GitHub pull request from the external Codex environment unless that environment explicitly marks PR creation unavailable.
+10. Report branch, pull request URL, status, summary, and validation back to the evolution run endpoint when available.
 
 ---
 
