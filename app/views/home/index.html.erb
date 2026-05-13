@@ -1,9 +1,9 @@
 <section class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
   <div>
-    <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Self-improving Rails product</p>
-    <h1 class="mt-3 max-w-3xl text-5xl font-semibold tracking-tight text-slate-950">loom turns user tickets into product evolution.</h1>
+    <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Product feedback for loom</p>
+    <h1 class="mt-3 max-w-3xl text-5xl font-semibold tracking-tight text-slate-950">Collect tickets, vote on priorities, and keep the roadmap focused.</h1>
     <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
-      Start with a focused website, collect real requests and usage signals, then let controlled AI agents propose tested pull requests.
+      Share feature requests and bugs, see what other users care about, and help decide what should be built next.
     </p>
     <div class="mt-8 flex flex-wrap gap-3">
       <% if user_signed_in? %>
@@ -26,8 +26,8 @@
       <p class="mt-2 text-4xl font-semibold"><%= @shipped_count %></p>
     </div>
     <div class="rounded-md border border-slate-200 bg-white p-5">
-      <p class="text-sm font-medium text-slate-500">Evolution runs logged</p>
-      <p class="mt-2 text-4xl font-semibold"><%= @evolution_count %></p>
+      <p class="text-sm font-medium text-slate-500">Votes cast</p>
+      <p class="mt-2 text-4xl font-semibold"><%= @vote_count %></p>
     </div>
   </div>
 </section>

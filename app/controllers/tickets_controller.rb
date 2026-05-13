@@ -1,10 +1,11 @@
 class TicketsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_ticket, only: %i[ show edit update destroy ]
+  before_action :set_ticket, only: %i[ show vote unvote ]
+  before_action :set_editable_ticket, only: %i[ edit update destroy ]
 
   # GET /tickets or /tickets.json
   def index
-    @tickets = ticket_scope.latest.includes(:user)
+    @tickets = Ticket.top.includes(:user)
   end
 
   # GET /tickets/1 or /tickets/1.json
@@ -27,9 +28,8 @@ class TicketsController < ApplicationController
     respond_to do |format|
       if @ticket.save
         track_usage("ticket.created", ticket_id: @ticket.id, priority: @ticket.priority)
-        ProcessTicketJob.perform_later(@ticket.id)
 
-        format.html { redirect_to @ticket, notice: "Ticket was created and queued for analysis." }
+        format.html { redirect_to @ticket, notice: "Ticket was created." }
         format.json { render :show, status: :created, location: @ticket }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -63,10 +63,30 @@ class TicketsController < ApplicationController
     end
   end
 
+  def vote
+    current_user.votes.find_or_create_by!(ticket: @ticket)
+    track_usage("ticket.voted", ticket_id: @ticket.id)
+
+    redirect_back fallback_location: @ticket, notice: "Vote recorded."
+  rescue ActiveRecord::RecordNotUnique
+    redirect_back fallback_location: @ticket, notice: "Vote already recorded."
+  end
+
+  def unvote
+    current_user.votes.where(ticket: @ticket).destroy_all
+    track_usage("ticket.unvoted", ticket_id: @ticket.id)
+
+    redirect_back fallback_location: @ticket, notice: "Vote removed."
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_ticket
-      @ticket = ticket_scope.find(params.expect(:id))
+      @ticket = Ticket.find(params.expect(:id))
+    end
+
+    def set_editable_ticket
+      @ticket = editable_ticket_scope.find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.
@@ -77,7 +97,7 @@ class TicketsController < ApplicationController
       params.expect(ticket: permitted)
     end
 
-    def ticket_scope
+    def editable_ticket_scope
       current_user.admin? ? Ticket.all : current_user.tickets
     end
 end

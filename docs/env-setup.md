@@ -35,22 +35,15 @@ CLOUDFLARE_API_TOKEN=
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
-
 ADMIN_EMAIL=
 ADMIN_PASSWORD=
 ADMIN_NAME=loom Admin
 
 SENTRY_DSN=
 SENTRY_TRACES_SAMPLE_RATE=0.1
-
-ANTHROPIC_API_KEY=
-OPENAI_API_KEY=
-GITHUB_TOKEN=
-EVOLUTION_DAILY_SPEND_CAP_USD=25
-EVOLUTION_AUTOMERGE_ENABLED=false
 ```
+
+`SENTRY_DSN` is optional. Sentry is external error monitoring: it records production exceptions and performance traces so you can see what broke after deploys. The app boots without it.
 
 ## Services
 
@@ -62,6 +55,11 @@ Set up these external services as needed:
 * Cloudflare R2 for durable Active Storage uploads. Without R2 vars, production boots with local storage.
 * Cloudflare Email Service for outbound mail
 * Stripe for billing
-* Sentry for error monitoring
-* Google and GitHub OAuth apps if social login is enabled
-* OpenAI, Anthropic, and GitHub tokens when the autonomous evolution runner is enabled
+* Sentry for optional error monitoring
+* Google OAuth app if social login is enabled
+
+## Not Needed In The Rails App
+
+The self-improvement workflow runs outside this Rails app in Codex. The website only collects tickets and votes. It does not need `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or a GitHub API token.
+
+GitHub is still useful outside the app because the repository lives there and Railway can deploy from it. Codex can also use GitHub externally when it later turns tickets into branches or pull requests, but no GitHub secrets are required in the Rails runtime.

@@ -5,16 +5,16 @@ Rails.application.routes.draw do
 
   get "dashboard", to: "dashboard#show"
 
-  namespace :admin do
-    get "evolution", to: "evolution#index"
-    post "evolution", to: "evolution#create"
-  end
-
   authenticate :user, ->(user) { user.admin? } do
     mount Sidekiq::Web => "/sidekiq"
   end
 
-  resources :tickets
+  resources :tickets do
+    member do
+      post :vote
+      delete :vote, action: :unvote
+    end
+  end
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

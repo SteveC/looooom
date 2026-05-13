@@ -4,6 +4,7 @@ one:
   description: A user wants a darker interface for late-night use.
   status: open
   priority: normal
+  votes_count: 1
 
 two:
   user: two
@@ -11,3 +12,4 @@ two:
   description: The dashboard should show the most important product signals.
   status: planned
   priority: high
+  votes_count: 0

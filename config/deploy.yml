@@ -86,8 +86,6 @@ builder:
   # # Pass arguments and secrets to the Docker build process
   # args:
   #   RUBY_VERSION: ruby-4.0.3
-  # secrets:
-  #   - GITHUB_TOKEN
 #   - SECRET_KEY_BASE
 
 # Use a different ssh user than root

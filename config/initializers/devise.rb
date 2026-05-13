@@ -278,10 +278,6 @@ Devise.setup do |config|
                   ENV.fetch("GOOGLE_CLIENT_ID", "missing-google-client-id"),
                   ENV.fetch("GOOGLE_CLIENT_SECRET", "missing-google-client-secret")
 
-  config.omniauth :github,
-                  ENV.fetch("GITHUB_CLIENT_ID", "missing-github-client-id"),
-                  ENV.fetch("GITHUB_CLIENT_SECRET", "missing-github-client-secret"),
-                  scope: "user:email"
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

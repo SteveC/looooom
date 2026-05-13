@@ -4,10 +4,6 @@ module Users
       sign_in_from_omniauth
     end
 
-    def github
-      sign_in_from_omniauth
-    end
-
     private
 
     def sign_in_from_omniauth

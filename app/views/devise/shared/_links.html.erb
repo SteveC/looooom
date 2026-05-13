@@ -21,7 +21,6 @@
 <%- if devise_mapping.omniauthable? %>
   <% providers = [] %>
   <% providers << :google_oauth2 if ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present? %>
-  <% providers << :github if ENV["GITHUB_CLIENT_ID"].present? && ENV["GITHUB_CLIENT_SECRET"].present? %>
 
   <% providers.each do |provider| %>
     <p class="mt-2">
