@@ -12,8 +12,8 @@ r2:
   secret_access_key: <%= ENV["R2_SECRET_ACCESS_KEY"] %>
   region: auto
   bucket: <%= ENV["R2_BUCKET"] %>
-  <% r2_account_id = ENV["CLOUDFLARE_ACCOUNT_ID"].presence %>
-  endpoint: <%= "https://#{r2_account_id}.r2.cloudflarestorage.com" if r2_account_id.present? %>
+  <% cloudflare_account_id = ENV["CLOUDFLARE_ACCOUNT_ID"].presence %>
+  endpoint: <%= "https://#{cloudflare_account_id}.r2.cloudflarestorage.com" if cloudflare_account_id.present? %>
   force_path_style: true
 
 # Example AWS S3 configuration. Use environment variables rather than Rails credentials in this public repository.
