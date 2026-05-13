@@ -30,7 +30,6 @@ STRIPE_WEBHOOK_SECRET=
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
 R2_BUCKET=
-R2_ACCOUNT_ID=
 
 CLOUDFLARE_ACCOUNT_ID=
 CLOUDFLARE_API_TOKEN=
@@ -55,7 +54,7 @@ Set up these external services as needed:
 * Railway app connected to `SteveC/looooom`
 * Railway PostgreSQL
 * Railway Redis
-* Cloudflare R2 for durable Active Storage uploads. Without R2 vars, production boots with local storage.
+* Cloudflare R2 for durable Active Storage uploads. R2 uses `CLOUDFLARE_ACCOUNT_ID` for the S3 endpoint. Without R2 vars, production boots with local storage.
 * Cloudflare Email Service for outbound mail
 * Stripe for billing
 * Sentry for optional error monitoring
