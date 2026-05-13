@@ -14,7 +14,7 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
       amount_total: 1500,
       currency: "usd",
       client_reference_id: user.id.to_s,
-      metadata: { "user_id" => user.id.to_s, "kind" => "one_time", "price_id" => "price_once" }
+      metadata: { "user_id" => user.id.to_s, "kind" => "one_time", "amount_cents" => "1500", "currency" => "usd" }
     )
     event = stripe_event("checkout.session.completed", session)
 
@@ -59,6 +59,32 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
     record = user.subscription.reload
     assert_equal "active", record.status
     assert_equal "pro_monthly", record.plan
+  end
+
+  test "uses subscription metadata as plan for inline dynamic prices" do
+    user = users(:two)
+    subscription = stripe_object(
+      id: "sub_two",
+      customer: "cus_two",
+      status: "active",
+      current_period_end: 1.month.from_now.to_i,
+      metadata: { "user_id" => user.id.to_s, "kind" => "subscription", "amount_cents" => "900", "currency" => "usd" },
+      items: stripe_object(
+        data: [
+          stripe_object(price: stripe_object(id: "price_generated_inline", lookup_key: nil, nickname: nil))
+        ]
+      )
+    )
+    event = stripe_event("customer.subscription.updated", subscription)
+
+    with_env("STRIPE_WEBHOOK_SECRET" => "whsec_123") do
+      stub_stripe_webhook(event) do
+        post stripe_webhook_url, params: "{}", headers: { "Stripe-Signature" => "sig" }
+      end
+    end
+
+    assert_response :success
+    assert_equal "subscription", user.subscription.reload.plan
   end
 
   test "rejects invalid signatures" do

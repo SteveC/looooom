@@ -42,7 +42,7 @@
         </div>
 
         <% unless StripeCheckout.price_configured?("one_time") || StripeCheckout.price_configured?("subscription") %>
-          <p class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Stripe prices are not configured yet.</p>
+          <p class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Stripe checkout amounts are not configured yet.</p>
         <% end %>
       </div>
     </div>

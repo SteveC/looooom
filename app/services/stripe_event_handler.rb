@@ -80,6 +80,9 @@ class StripeEventHandler
   end
 
   def plan_name(stripe_subscription)
+    configured_kind = metadata_value(stripe_subscription, "kind")
+    return configured_kind if configured_kind.present?
+
     price = stripe_subscription.items&.data&.first&.price
     price&.lookup_key.presence || price&.nickname.presence || price&.id.presence || "subscription"
   end
