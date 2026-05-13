@@ -9,5 +9,7 @@ class DashboardController < ApplicationController
     @open_ticket_count = Ticket.openish.count
     @vote_count = Vote.count
     @usage_events = current_user.feature_usages.recent.group(:event_name).count
+    @subscription = current_user.subscription
+    @payments = current_user.payments.order(created_at: :desc).limit(5)
   end
 end

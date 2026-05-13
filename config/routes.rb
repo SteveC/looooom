@@ -15,6 +15,10 @@ Rails.application.routes.draw do
       delete :vote, action: :unvote
     end
   end
+  namespace :billing do
+    resource :checkout, only: :create
+  end
+  post "stripe/webhook", to: "stripe_webhooks#create"
   devise_for :users,
              skip: %i[ registrations passwords ],
              controllers: {

@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :votes, dependent: :destroy
   has_many :voted_tickets, through: :votes, source: :ticket
   has_many :feature_usages, dependent: :destroy
+  has_many :payments, dependent: :destroy
   has_one :subscription, dependent: :destroy
 
   def self.from_omniauth(auth)

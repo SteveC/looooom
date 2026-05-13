@@ -24,6 +24,30 @@
 
   <section class="grid gap-6 lg:grid-cols-2">
     <div>
+      <h2 class="mb-3 text-lg font-semibold">Billing</h2>
+      <div class="space-y-4 rounded-md border border-slate-200 bg-white p-5">
+        <div>
+          <p class="text-sm font-medium text-slate-500">Current plan</p>
+          <p class="mt-1 text-lg font-semibold"><%= @subscription&.plan&.humanize || "Free" %></p>
+          <p class="mt-1 text-sm text-slate-600"><%= @subscription&.status&.humanize || "No paid plan yet" %></p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <% if StripeCheckout.price_configured?("one_time") %>
+            <%= button_to "One-time payment", billing_checkout_path(kind: "one_time"), method: :post, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+          <% end %>
+          <% if StripeCheckout.price_configured?("subscription") %>
+            <%= button_to "Subscribe", billing_checkout_path(kind: "subscription"), method: :post, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
+          <% end %>
+        </div>
+
+        <% unless StripeCheckout.price_configured?("one_time") || StripeCheckout.price_configured?("subscription") %>
+          <p class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Stripe prices are not configured yet.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <div>
       <h2 class="mb-3 text-lg font-semibold">Top tickets</h2>
       <div class="divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
         <% @tickets.each do |ticket| %>

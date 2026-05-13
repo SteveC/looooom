@@ -1,0 +1,10 @@
+one:
+  user: one
+  stripe_checkout_session_id: cs_one
+  stripe_payment_intent_id: pi_one
+  stripe_customer_id: cus_one
+  price_id: price_one_time
+  status: paid
+  mode: payment
+  amount_total: 500
+  currency: usd

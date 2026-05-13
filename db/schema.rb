@@ -54,6 +54,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_131814) do
     t.index ["user_id"], name: "index_feature_usages_on_user_id"
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.integer "amount_total"
+    t.datetime "created_at", null: false
+    t.string "currency"
+    t.string "mode", default: "payment", null: false
+    t.string "price_id"
+    t.string "status", default: "pending", null: false
+    t.string "stripe_checkout_session_id", null: false
+    t.string "stripe_customer_id"
+    t.string "stripe_payment_intent_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["status"], name: "index_payments_on_status"
+    t.index ["stripe_checkout_session_id"], name: "index_payments_on_stripe_checkout_session_id", unique: true
+    t.index ["stripe_customer_id"], name: "index_payments_on_stripe_customer_id"
+    t.index ["stripe_payment_intent_id"], name: "index_payments_on_stripe_payment_intent_id"
+    t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "current_period_end"
@@ -113,6 +132,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_131814) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "feature_usages", "users"
+  add_foreign_key "payments", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "tickets", "users"
   add_foreign_key "votes", "tickets"

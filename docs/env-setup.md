@@ -8,8 +8,8 @@ This repository is public, so production secrets are env-only. Do not use Rails 
 SECRET_KEY_BASE=...
 DATABASE_URL=...
 REDIS_URL=...
-APP_HOST=looooom.com
-MAILER_FROM=hello@looooom.com
+APP_HOST=looo0om.com
+MAILER_FROM=hello@looo0om.com
 ```
 
 Generate `SECRET_KEY_BASE` locally:
@@ -24,6 +24,8 @@ PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/4.0.0/bin:$PATH" bi
 STRIPE_SECRET_KEY=
 STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
+STRIPE_ONE_TIME_PRICE_ID=
+STRIPE_SUBSCRIPTION_PRICE_ID=
 
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
@@ -56,6 +58,32 @@ Set up these external services as needed:
 * Stripe for billing
 * Sentry for optional error monitoring
 * Google OAuth app for all user login
+
+## Stripe Setup
+
+Use live mode if this is the production Railway app.
+
+1. In Stripe, create a one-time Price for one-off payments and set its ID as `STRIPE_ONE_TIME_PRICE_ID`.
+2. Create a recurring Price for subscriptions and set its ID as `STRIPE_SUBSCRIPTION_PRICE_ID`.
+3. Set `STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` from live mode API keys.
+4. Add a webhook endpoint:
+
+   ```text
+   https://looo0om.com/stripe/webhook
+   ```
+
+5. Subscribe that endpoint to:
+
+   ```text
+   checkout.session.completed
+   customer.subscription.created
+   customer.subscription.updated
+   customer.subscription.deleted
+   invoice.payment_succeeded
+   invoice.payment_failed
+   ```
+
+6. Copy the webhook signing secret into `STRIPE_WEBHOOK_SECRET`.
 
 ## Not Needed In The Rails App
 
