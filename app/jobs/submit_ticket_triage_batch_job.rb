@@ -1,5 +1,6 @@
 class SubmitTicketTriageBatchJob < ApplicationJob
   queue_as :default
+  BATCH_SIZE = 50
 
   def perform
     return unless Openai::Client.configured?
@@ -8,7 +9,7 @@ class SubmitTicketTriageBatchJob < ApplicationJob
     tickets = Ticket.where(review_status: "pending")
                     .where("ai_review_metadata ->> 'openai_batch_job_id' IS NULL")
                     .latest
-                    .limit(ENV.fetch("OPENAI_TICKET_BATCH_SIZE", 50).to_i)
+                    .limit(BATCH_SIZE)
     return if tickets.blank?
 
     batch_job = OpenaiBatchJob.create!(purpose: "ticket_triage", status: "queued", metadata: { ticket_ids: tickets.map(&:id) })

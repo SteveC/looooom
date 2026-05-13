@@ -2,6 +2,7 @@ class Ticket < ApplicationRecord
   STATUSES = %w[open planned in_progress shipped closed].freeze
   PRIORITIES = %w[low normal high urgent].freeze
   REVIEW_STATUSES = %w[pending accepted held spam duplicate rejected].freeze
+  IMPLEMENTATION_VOTE_THRESHOLD = 2
 
   belongs_to :user
   belongs_to :duplicate_ticket, class_name: "Ticket", optional: true
@@ -26,8 +27,7 @@ class Ticket < ApplicationRecord
   scope :accepted, -> { where(review_status: "accepted") }
   scope :pending_review, -> { where(review_status: %w[pending held spam duplicate rejected]) }
   scope :implementation_candidates, lambda {
-    threshold = ENV.fetch("TICKET_IMPLEMENTATION_VOTE_THRESHOLD", 2).to_i
-    accepted.where("votes_count >= ? OR priority = ?", threshold, "urgent")
+    accepted.where("votes_count >= ? OR priority = ?", IMPLEMENTATION_VOTE_THRESHOLD, "urgent")
   }
 
   def voted_by?(user)

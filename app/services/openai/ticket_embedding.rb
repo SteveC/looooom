@@ -10,16 +10,15 @@ module Openai
     def call
       return unless Client.configured?
 
-      model = ENV.fetch("OPENAI_EMBEDDING_MODEL", MODEL)
       response = client.post_json(
         "/v1/embeddings",
         {
-          model: model,
+          model: MODEL,
           input: "#{ticket.title}\n\n#{ticket.description}"
         }
       )
       embedding = response.fetch("data").first.fetch("embedding")
-      ticket.update!(embedding: embedding, embedding_model: model)
+      ticket.update!(embedding: embedding, embedding_model: MODEL)
       embedding
     end
 

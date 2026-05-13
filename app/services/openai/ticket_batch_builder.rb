@@ -1,5 +1,7 @@
 module Openai
   class TicketBatchBuilder
+    MODEL = "gpt-5-mini"
+
     SCHEMA = {
       type: "object",
       additionalProperties: false,
@@ -29,7 +31,7 @@ module Openai
         method: "POST",
         url: "/v1/responses",
         body: {
-          model: ENV.fetch("OPENAI_TICKET_TRIAGE_MODEL", "gpt-5-mini"),
+          model: MODEL,
           input: [
             { role: "system", content: system_prompt },
             { role: "user", content: user_prompt(ticket) }

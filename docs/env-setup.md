@@ -40,12 +40,6 @@ ADMIN_EMAIL=
 ADMIN_NAME=loom Admin
 
 OPENAI_API_KEY=
-OPENAI_TICKET_TRIAGE_MODEL=gpt-5-mini
-OPENAI_MODERATION_MODEL=omni-moderation-latest
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-OPENAI_TICKET_BATCH_SIZE=50
-TICKET_DUPLICATE_SIMILARITY_THRESHOLD=0.91
-TICKET_IMPLEMENTATION_VOTE_THRESHOLD=2
 EVOLUTION_RUNNER_TOKEN=
 
 SENTRY_DSN=
@@ -58,9 +52,7 @@ SENTRY_TRACES_SAMPLE_RATE=0.1
 
 `OPENAI_API_KEY` is used only for product/content workflows inside Rails: ticket moderation, duplicate detection, and batch ticket triage. It is not used for code changes, Git operations, or GitHub access.
 
-`OPENAI_TICKET_TRIAGE_MODEL` defaults to `gpt-5-mini`. `OPENAI_MODERATION_MODEL` defaults to `omni-moderation-latest`, and `OPENAI_EMBEDDING_MODEL` defaults to `text-embedding-3-small`.
-
-`OPENAI_TICKET_BATCH_SIZE` controls how many pending tickets are sent per Batch API job. `TICKET_DUPLICATE_SIMILARITY_THRESHOLD` controls embedding-based duplicate detection. `TICKET_IMPLEMENTATION_VOTE_THRESHOLD` controls which accepted tickets appear in the external evolution runner context.
+Ticket triage uses code-level defaults: `gpt-5-mini` for batch triage, `omni-moderation-latest` for moderation, `text-embedding-3-small` for embeddings, 50 tickets per batch, 0.91 duplicate similarity, and 2 votes for implementation eligibility.
 
 `EVOLUTION_RUNNER_TOKEN` is a long shared secret for external runners. Runners call `/admin/evolution/context.json` with `Authorization: Bearer <token>` or `X-Evolution-Runner-Token`, then report work to `/admin/evolution/runs.json`. This token gives access to curated product context and run reporting only; it is not a GitHub token.
 

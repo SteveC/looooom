@@ -1,6 +1,6 @@
 module Openai
   class TicketDuplicateDetector
-    DEFAULT_THRESHOLD = 0.91
+    SIMILARITY_THRESHOLD = 0.91
 
     def initialize(ticket)
       @ticket = ticket
@@ -9,12 +9,11 @@ module Openai
     def call
       return unless ticket.embedding.is_a?(Array)
 
-      threshold = ENV.fetch("TICKET_DUPLICATE_SIMILARITY_THRESHOLD", DEFAULT_THRESHOLD).to_f
       Ticket.accepted.where.not(id: ticket.id).where.not(embedding: nil).find_each do |candidate|
         next unless candidate.embedding.is_a?(Array)
 
         score = cosine(ticket.embedding, candidate.embedding)
-        return { ticket: candidate, score: score } if score >= threshold
+        return { ticket: candidate, score: score } if score >= SIMILARITY_THRESHOLD
       end
 
       nil

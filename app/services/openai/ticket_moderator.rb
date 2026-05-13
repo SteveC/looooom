@@ -1,5 +1,7 @@
 module Openai
   class TicketModerator
+    MODEL = "omni-moderation-latest"
+
     def initialize(ticket, client: Client.new)
       @ticket = ticket
       @client = client
@@ -11,7 +13,7 @@ module Openai
       response = client.post_json(
         "/v1/moderations",
         {
-          model: ENV.fetch("OPENAI_MODERATION_MODEL", "omni-moderation-latest"),
+          model: MODEL,
           input: "#{ticket.title}\n\n#{ticket.description}"
         }
       )

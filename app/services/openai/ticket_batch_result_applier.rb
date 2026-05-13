@@ -43,7 +43,7 @@ module Openai
       metadata = {
         openai_batch_job_id: batch_job.id,
         openai_batch_id: batch_job.openai_batch_id,
-        ticket_triage_model: ENV.fetch("OPENAI_TICKET_TRIAGE_MODEL", "gpt-5-mini"),
+        ticket_triage_model: Openai::TicketBatchBuilder::MODEL,
         ticket_triage_decision: payload
       }
 

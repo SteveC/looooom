@@ -95,7 +95,7 @@ module Admin
     end
 
     def vote_threshold
-      ENV.fetch("TICKET_IMPLEMENTATION_VOTE_THRESHOLD", 2).to_i
+      Ticket::IMPLEMENTATION_VOTE_THRESHOLD
     end
   end
 end
