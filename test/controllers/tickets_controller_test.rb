@@ -16,6 +16,16 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_ticket_url
     assert_response :success
+    assert_select "select[name='ticket[status]']", false
+  end
+
+  test "admin new ticket form does not show status" do
+    sign_in users(:admin)
+
+    get new_ticket_url
+
+    assert_response :success
+    assert_select "select[name='ticket[status]']", false
   end
 
   test "should create ticket" do
@@ -67,6 +77,15 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "should get edit" do
     get edit_ticket_url(@ticket)
     assert_response :success
+  end
+
+  test "admin edit ticket form shows status" do
+    sign_in users(:admin)
+
+    get edit_ticket_url(@ticket)
+
+    assert_response :success
+    assert_select "select[name='ticket[status]']"
   end
 
   test "should update ticket" do
