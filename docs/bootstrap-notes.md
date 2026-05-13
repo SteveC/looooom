@@ -21,7 +21,7 @@ PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/4.0.0/bin:$PATH"
 
 ```bash
 gem install rails -v 8.1.3
-rails new /tmp/evosite --css=tailwind --database=postgresql --skip-git
+rails new /tmp/looooom --css=tailwind --database=postgresql --skip-git
 rsync generated Rails files into /Users/steve/looooom
 bundle add devise stripe aws-sdk-s3 cloudflare-email sidekiq sentry-ruby sentry-rails omniauth omniauth-google-oauth2 omniauth-github
 ```

@@ -1,6 +1,6 @@
-# EvoSite Context
+# looooom Context
 
-EvoSite is a Rails 8 self-improving website. The core product loop is:
+looooom is a Rails 8 self-improving website. The core product loop is:
 
 1. Users submit tickets and feature requests.
 2. The app records usage analytics and operational signals.

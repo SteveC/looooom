@@ -1,4 +1,4 @@
-# EvoSite - Self-Improving Website
+# looooom - Self-Improving Website
 ## PRD + Technical Specification v1.0
 
 **A website that starts simple and evolves itself biologically**
@@ -10,7 +10,7 @@
 
 ## System Prompt For The AI Coder
 
-You are an expert senior Rails 8 developer and system architect. Your job is to build **EvoSite** exactly as described in this document.
+You are an expert senior Rails 8 developer and system architect. Your job is to build **looooom** exactly as described in this document.
 
 * Use **Rails 8**.
 * Follow modern Rails conventions: Hotwire, Turbo, Stimulus, Tailwind CSS, Active Storage, Action Mailer, Sidekiq, and Rails-native defaults.
@@ -27,7 +27,7 @@ Start by creating a new Rails 8 application and follow the exact phases and stru
 
 ### Vision
 
-EvoSite is a living web application that begins with core functionality and then autonomously improves itself based on real user behavior, explicit feature requests, and usage analytics, with no humans required in the loop after the initial bootstrap.
+looooom is a living web application that begins with core functionality and then autonomously improves itself based on real user behavior, explicit feature requests, and usage analytics, with no humans required in the loop after the initial bootstrap.
 
 ### Primary Goal
 
@@ -196,7 +196,7 @@ EVOLUTION_AUTOMERGE_ENABLED=false
 ## 8. Initial Project Structure
 
 ```text
-evosite/
+looooom/
 ├── app/
 │   ├── controllers/
 │   │   ├── tickets_controller.rb
@@ -216,7 +216,7 @@ evosite/
 ├── lib/
 │   └── evolution/
 ├── docs/
-│   ├── evosite-prd.md
+│   ├── looooom-prd.md
 │   └── codex-evolution-prompt.md
 ├── CLAUDE.md
 ├── AGENTS.md
@@ -234,8 +234,8 @@ evosite/
 3. Create the app:
 
    ```bash
-   rails new evosite --css=tailwind --database=postgresql
-   cd evosite
+   rails new looooom --css=tailwind --database=postgresql
+   cd looooom
    ```
 
 4. Add the gems listed in section 2.

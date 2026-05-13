@@ -8,9 +8,9 @@ module Evolution
 
     def build
       <<~PROMPT
-        # EvoSite Evolution Run
+        # looooom Evolution Run
 
-        You are EvoSite's autonomous engineering agent. Inspect the repository, read the PRD and project context, choose one bounded improvement, implement it with tests, and create a pull request.
+        You are looooom's autonomous engineering agent. Inspect the repository, read the PRD and project context, choose one bounded improvement, implement it with tests, and create a pull request.
 
         ## Trigger
 
@@ -84,7 +84,7 @@ module Evolution
 
     def project_context
       [
-        read_file("docs/evosite-prd.md"),
+        read_file("docs/looooom-prd.md"),
         read_file("docs/codex-evolution-prompt.md"),
         read_file("AGENTS.md"),
         read_file("CLAUDE.md")
