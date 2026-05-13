@@ -8,9 +8,9 @@ module Evolution
 
     def build
       <<~PROMPT
-        # looooom Evolution Run
+        # loom Evolution Run
 
-        You are looooom's autonomous engineering agent. Inspect the repository, read the PRD and project context, choose one bounded improvement, implement it with tests, and create a pull request.
+        You are loom's autonomous engineering agent. Inspect the repository, read the PRD and project context, choose one bounded improvement, implement it with tests, and create a pull request.
 
         ## Trigger
 

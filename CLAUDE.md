@@ -1,6 +1,6 @@
-# looooom Context
+# loom Context
 
-looooom is a Rails 8 self-improving website. The core product loop is:
+loom is a Rails 8 self-improving website. The core product loop is:
 
 1. Users submit tickets and feature requests.
 2. The app records usage analytics and operational signals.

@@ -10,7 +10,7 @@
 
 if ENV["ADMIN_EMAIL"].present? && ENV["ADMIN_PASSWORD"].present?
   admin = User.find_or_initialize_by(email: ENV.fetch("ADMIN_EMAIL"))
-  admin.name = ENV.fetch("ADMIN_NAME", "looooom Admin")
+  admin.name = ENV.fetch("ADMIN_NAME", "loom Admin")
   admin.password = ENV.fetch("ADMIN_PASSWORD") if admin.encrypted_password.blank?
   admin.admin = true
   admin.save!

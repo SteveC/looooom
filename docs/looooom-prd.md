@@ -1,4 +1,4 @@
-# looooom - Self-Improving Website
+# loom - Self-Improving Website
 ## PRD + Technical Specification v1.0
 
 **A website that starts simple and evolves itself biologically**
@@ -10,7 +10,7 @@
 
 ## System Prompt For The AI Coder
 
-You are an expert senior Rails 8 developer and system architect. Your job is to build **looooom** exactly as described in this document.
+You are an expert senior Rails 8 developer and system architect. Your job is to build **loom** exactly as described in this document.
 
 * Use **Rails 8**.
 * Follow modern Rails conventions: Hotwire, Turbo, Stimulus, Tailwind CSS, Active Storage, Action Mailer, Sidekiq, and Rails-native defaults.
@@ -27,7 +27,7 @@ Start by creating a new Rails 8 application and follow the exact phases and stru
 
 ### Vision
 
-looooom is a living web application that begins with core functionality and then autonomously improves itself based on real user behavior, explicit feature requests, and usage analytics, with no humans required in the loop after the initial bootstrap.
+loom is a living web application that begins with core functionality and then autonomously improves itself based on real user behavior, explicit feature requests, and usage analytics, with no humans required in the loop after the initial bootstrap.
 
 ### Primary Goal
 

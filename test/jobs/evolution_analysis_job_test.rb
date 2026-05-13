@@ -8,7 +8,7 @@ class EvolutionAnalysisJobTest < ActiveJob::TestCase
 
     log = EvolutionLog.latest.first
     assert_equal "completed", log.status
-    assert_includes log.prompt, "looooom Evolution Run"
+    assert_includes log.prompt, "loom Evolution Run"
     assert_includes log.prompt, "Ticket Signals"
   end
 end

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "looooom" %></title>
+    <title><%= content_for(:title) || "loom" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="looooom">
+    <meta name="application-name" content="loom">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -26,7 +26,7 @@
   <body class="min-h-screen bg-slate-50 text-slate-950">
     <header class="border-b border-slate-200 bg-white">
       <nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <%= link_to "looooom", root_path, class: "text-lg font-semibold tracking-tight" %>
+        <%= link_to "loom", root_path, class: "text-lg font-semibold tracking-tight" %>
 
         <div class="flex items-center gap-4 text-sm font-medium text-slate-700">
           <% if user_signed_in? %>

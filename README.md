@@ -1,6 +1,8 @@
 # looooom
 
-This repository is the starting point for **looooom**, a Rails-based self-improving website.
+This repository is the starting point for **loom**, a Rails-based self-improving website.
+
+Naming note: the site/product is **loom**. The repository and domain use **looooom**.
 
 Current foundation:
 
