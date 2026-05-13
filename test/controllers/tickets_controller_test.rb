@@ -13,6 +13,38 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", edit_ticket_path(tickets(:two)), false
   end
 
+  test "public users can browse tickets" do
+    sign_out @user
+
+    get tickets_url
+
+    assert_response :success
+    assert_select "h1", "Tickets"
+    assert_select "a[href=?]", ticket_path(@ticket)
+    assert_select "a", "Sign in to submit"
+  end
+
+  test "public users can browse recent tickets" do
+    sign_out @user
+
+    get recent_tickets_url
+
+    assert_response :success
+    assert_select "h1", "Recent tickets"
+    assert_select "a[href=?]", ticket_path(@ticket)
+  end
+
+  test "ticket list search filters public tickets" do
+    sign_out @user
+
+    get tickets_url(q: "dashboard")
+
+    assert_response :success
+    assert_select "input[name='q'][value='dashboard']"
+    assert_select "a[href=?]", ticket_path(tickets(:two))
+    assert_select "a[href=?]", ticket_path(@ticket), false
+  end
+
   test "should get new" do
     get new_ticket_url
     assert_response :success
@@ -58,6 +90,29 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "should show ticket" do
     get ticket_url(@ticket)
     assert_response :success
+  end
+
+  test "public users can view accepted tickets" do
+    sign_out @user
+
+    get ticket_url(@ticket)
+
+    assert_response :success
+    assert_select "h1", @ticket.title
+    assert_select "a", "Sign in to vote"
+  end
+
+  test "public users cannot view pending tickets" do
+    sign_out @user
+    pending_ticket = @user.tickets.create!(
+      title: "Pending private ticket",
+      description: "This should stay hidden until accepted.",
+      review_status: "pending"
+    )
+
+    get ticket_url(pending_ticket)
+
+    assert_response :not_found
   end
 
   test "ticket page shows evolution run output" do
@@ -141,6 +196,16 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Closed tickets"
+    assert_select "a[href=?]", ticket_path(@ticket)
+  end
+
+  test "public users can browse closed tickets" do
+    sign_out @user
+    @ticket.update!(status: "closed")
+
+    get closed_tickets_url
+
+    assert_response :success
     assert_select "a[href=?]", ticket_path(@ticket)
   end
 

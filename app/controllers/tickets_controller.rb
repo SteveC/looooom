@@ -1,15 +1,19 @@
 class TicketsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: %i[index recent closed show]
   before_action :set_ticket, only: %i[ show vote unvote reopen ]
   before_action :set_editable_ticket, only: %i[ edit update destroy ]
 
   # GET /tickets or /tickets.json
   def index
-    @tickets = visible_ticket_scope.openish.top.includes(:user)
+    @tickets = filtered_tickets(visible_ticket_scope.openish).top.includes(:user)
+  end
+
+  def recent
+    @tickets = filtered_tickets(visible_ticket_scope.openish).latest.includes(:user)
   end
 
   def closed
-    @tickets = visible_ticket_scope.closedish.top.includes(:user)
+    @tickets = filtered_tickets(visible_ticket_scope.closedish).top.includes(:user)
   end
 
   # GET /tickets/1 or /tickets/1.json
@@ -126,7 +130,15 @@ class TicketsController < ApplicationController
     end
 
     def visible_ticket_scope
-      current_user.admin? ? Ticket.all : Ticket.accepted
+      current_user&.admin? ? Ticket.all : Ticket.accepted
+    end
+
+    def filtered_tickets(scope)
+      @query = params[:q].to_s.strip
+      return scope if @query.blank?
+
+      pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@query.downcase)}%"
+      scope.where("LOWER(title) LIKE :query OR LOWER(description) LIKE :query", query: pattern)
     end
 
     def prepare_review_state(ticket)

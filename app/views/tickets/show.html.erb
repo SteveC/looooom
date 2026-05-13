@@ -21,19 +21,25 @@
   <div class="mt-8 whitespace-pre-wrap rounded-md border border-slate-200 bg-white p-5 leading-7 text-slate-800"><%= @ticket.description %></div>
 
   <div class="mt-6 flex flex-wrap gap-3">
-    <% if @ticket.voted_by?(current_user) %>
+    <% if user_signed_in? && @ticket.voted_by?(current_user) %>
       <%= button_to "Remove vote", vote_ticket_path(@ticket), method: :delete, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
-    <% else %>
+    <% elsif user_signed_in? %>
       <%= button_to "Vote", vote_ticket_path(@ticket), method: :post, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+    <% else %>
+      <%= link_to "Sign in to vote", new_user_session_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
     <% end %>
-    <% if current_user.admin? || @ticket.user == current_user %>
+    <% if current_user&.admin? || @ticket.user == current_user %>
       <%= link_to "Edit", edit_ticket_path(@ticket), class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
     <% end %>
     <% if @ticket.closed? %>
-      <%= button_to current_user.admin? ? "Reopen" : "Vote to reopen", reopen_ticket_path(@ticket), method: :post, class: "rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100" %>
+      <% if user_signed_in? %>
+        <%= button_to current_user.admin? ? "Reopen" : "Vote to reopen", reopen_ticket_path(@ticket), method: :post, class: "rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100" %>
+      <% else %>
+        <%= link_to "Sign in to reopen", new_user_session_path, class: "rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100" %>
+      <% end %>
     <% end %>
     <%= link_to "Back", tickets_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
-    <% if current_user.admin? || @ticket.user == current_user %>
+    <% if current_user&.admin? || @ticket.user == current_user %>
       <%= button_to "Delete", @ticket, method: :delete, class: "rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 hover:bg-red-100", data: { turbo_confirm: "Delete this ticket?" } %>
     <% end %>
   </div>

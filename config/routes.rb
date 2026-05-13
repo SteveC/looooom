@@ -25,6 +25,7 @@ Rails.application.routes.draw do
 
   resources :tickets do
     collection do
+      get :recent
       get :closed
     end
 
