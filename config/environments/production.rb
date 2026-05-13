@@ -21,8 +21,10 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files in Cloudflare R2 by default.
-  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "r2").to_sym
+  # Use Cloudflare R2 when configured; fall back to local storage so minimal deploys can boot.
+  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE") do
+    ENV["R2_BUCKET"].present? ? "r2" : "local"
+  end.to_sym
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # config.assume_ssl = true
@@ -47,8 +49,8 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Use Redis for durable cache data when available.
-  config.cache_store = if ENV["REDIS_URL"].present?
-    :redis_cache_store
+  config.cache_store = if (redis_url = ENV["REDIS_URL"]).present?
+    [ :redis_cache_store, { url: redis_url } ]
   else
     :memory_store
   end
@@ -63,10 +65,10 @@ Rails.application.configure do
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "example.com") }
 
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
+  # Specify outgoing SMTP server if not using Cloudflare Email Service.
   # config.action_mailer.smtp_settings = {
-  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
-  #   password: Rails.application.credentials.dig(:smtp, :password),
+  #   user_name: ENV["SMTP_USER_NAME"],
+  #   password: ENV["SMTP_PASSWORD"],
   #   address: "smtp.example.com",
   #   port: 587,
   #   authentication: :plain

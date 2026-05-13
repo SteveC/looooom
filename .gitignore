@@ -6,6 +6,7 @@
 .env.*
 !.env.example
 config/master.key
+config/credentials.yml.enc
 config/credentials/*.key
 
 # Logs and temp files

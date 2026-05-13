@@ -27,11 +27,6 @@ gem "jbuilder"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
-gem "solid_queue"
-gem "solid_cable"
-
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -74,6 +69,7 @@ gem "stripe", "~> 19.1"
 gem "aws-sdk-s3", "~> 1.221"
 gem "cloudflare-email", "~> 0.1.0"
 gem "sidekiq", "~> 8.1"
+gem "redis", ">= 4.0.1"
 gem "sentry-ruby", "~> 6.5"
 gem "sentry-rails", "~> 6.5"
 gem "omniauth", "~> 2.1"

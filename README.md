@@ -10,6 +10,7 @@ Current foundation:
 * [Codex evolution prompt](docs/codex-evolution-prompt.md)
 * [Bootstrap notes](docs/bootstrap-notes.md)
 * [Research notes](docs/research-notes.md)
+* [Environment setup](docs/env-setup.md)
 
 ## Local Development
 
