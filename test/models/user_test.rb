@@ -38,6 +38,38 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  test "new users get a generated public username" do
+    user = User.create!(email: "fresh@example.com", password: "password123")
+
+    assert_match(/\A[a-z]+-[a-z]+-\d{2}\z/, user.username)
+    assert_nil user.username_changed_at
+  end
+
+  test "username can be changed once and is normalized" do
+    user = users(:one)
+
+    assert user.update(username: "Heavy Banana 56")
+    assert_equal "heavy-banana-56", user.username
+    assert_not_nil user.username_changed_at
+
+    assert_not user.update(username: "quiet-river-22")
+    assert_includes user.errors[:username], "can only be changed once"
+  end
+
+  test "karma score rewards tickets approval votes and comments" do
+    user = users(:one)
+
+    assert_equal({
+      tickets: 3,
+      accepted_tickets: 12,
+      shipped_tickets: 0,
+      votes_cast: 0,
+      votes_received: 1,
+      comments: 2
+    }, user.karma_breakdown)
+    assert_equal 18, user.karma_score
+  end
+
   private
 
   def omniauth_hash(email:, uid:, name:)

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   end
 
   get "u/:slug", to: "users#show", as: :user
+  resource :profile, only: %i[edit update]
 
   resources :tickets do
     collection do
