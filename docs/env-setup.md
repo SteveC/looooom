@@ -51,6 +51,8 @@ The admin dashboard includes a storage smoke test. In production, it tests Cloud
 
 The R2 Active Storage service sets AWS SDK checksum calculation and validation to `when_required`. Active Storage already sends `Content-MD5` on uploads; leaving the AWS SDK defaults can add a second checksum header that Cloudflare R2 rejects.
 
+The admin dashboard also includes a Stripe smoke test. It calls Stripe's read-only balance retrieval endpoint with `STRIPE_SECRET_KEY`; it does not create customers, checkout sessions, payment intents, refunds, or charges.
+
 ## Services
 
 Set up these external services as needed:

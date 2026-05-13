@@ -37,17 +37,29 @@
   </section>
 
   <section class="rounded-md border border-slate-200 bg-white p-5">
-    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-      <div>
-        <h2 class="text-lg font-semibold">System tests</h2>
-        <p class="mt-1 text-sm leading-6 text-slate-600">
-          Run a storage smoke test that creates a 1-byte file with Active Storage, downloads it, and deletes it.
-        </p>
+    <h2 class="text-lg font-semibold">System tests</h2>
+    <div class="mt-4 grid gap-4 lg:grid-cols-2">
+      <div class="flex flex-col justify-between gap-4 rounded-md border border-slate-200 p-4 md:flex-row md:items-center">
+        <div>
+          <p class="font-medium text-slate-950">R2 storage</p>
+          <p class="mt-1 text-sm leading-6 text-slate-600">Creates a 1-byte file with Active Storage, downloads it, and deletes it.</p>
+        </div>
+        <%= button_to "Test R2",
+                      admin_storage_test_path,
+                      method: :post,
+                      class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
       </div>
-      <%= button_to "Test R2 storage",
-                    admin_storage_test_path,
-                    method: :post,
-                    class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+
+      <div class="flex flex-col justify-between gap-4 rounded-md border border-slate-200 p-4 md:flex-row md:items-center">
+        <div>
+          <p class="font-medium text-slate-950">Stripe</p>
+          <p class="mt-1 text-sm leading-6 text-slate-600">Retrieves the account balance to verify the secret key without creating charges.</p>
+        </div>
+        <%= button_to "Test Stripe",
+                      admin_stripe_test_path,
+                      method: :post,
+                      class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
+      </div>
     </div>
   </section>
 
