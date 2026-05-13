@@ -52,7 +52,7 @@ constraints:
 ## Required Workflow
 
 1. Inspect the repo before deciding what to change.
-2. Read `docs/looooom-prd.md`, `CLAUDE.md` if present, `AGENTS.md`, recent accepted implementation-candidate tickets, comments, usage context, and relevant code.
+2. Read `docs/looooom-prd.md`, `AGENTS.md`, recent accepted implementation-candidate tickets, comments, usage context, and relevant code.
 3. Choose one bounded improvement. Prefer:
    * A high-priority ticket affecting many users.
    * A regression or production error with a clear fix.
@@ -60,7 +60,7 @@ constraints:
 4. If the requested change is technically risky, expensive, or contradicted by repo evidence, explain the better approach and implement that safer approach only if it still addresses the ticket.
 5. Create or update tests for the behavior changed.
 6. Run the relevant tests. Run the full suite if the change touches shared behavior, auth, billing, background jobs, or deployment.
-7. Update `CLAUDE.md` or project docs only when the change creates durable operational knowledge.
+7. Update `AGENTS.md` or project docs only when the change creates durable operational knowledge.
 8. Commit on a new branch using the `evolution/<ticket-id>-<short-slug>` naming pattern.
 9. Push the branch and open a GitHub pull request from the external Codex environment unless that environment explicitly marks PR creation unavailable.
 10. Report branch, pull request URL, status, summary, and validation back to the evolution run endpoint when available.

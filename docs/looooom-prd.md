@@ -4,7 +4,7 @@
 **A focused product feedback board for collecting and prioritizing tickets**
 
 **Date:** May 13, 2026<br>
-**Status:** Ready for immediate AI implementation (Codex / Claude Code)
+**Status:** Ready for immediate AI implementation with Codex
 
 ---
 
@@ -259,7 +259,6 @@ looooom/
 ├── docs/
 │   ├── looooom-prd.md
 │   └── codex-evolution-prompt.md
-├── CLAUDE.md
 ├── AGENTS.md
 ├── Procfile
 ├── Dockerfile
@@ -268,7 +267,7 @@ looooom/
 
 ---
 
-## 9. Implementation Instructions For Codex / Claude Code
+## 9. Implementation Instructions For Codex
 
 1. Ensure Ruby 3.2.0 or newer is active.
 2. Install Rails 8.
@@ -285,7 +284,7 @@ looooom/
 7. Set up Devise, OmniAuth, and the basic Ticket model/CRUD.
 8. Add Sidekiq and Redis.
 9. Add ticket voting and safe-for-work ticket validation.
-10. Add `CLAUDE.md` at the app root with full project context.
+10. Keep `AGENTS.md` at the app root updated with durable project context.
 11. Add the Railway `Procfile`.
 12. Implement the full evolution loop in Phase 2.
 
