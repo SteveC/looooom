@@ -33,6 +33,7 @@ module Admin
         assert_select "h2", "Recent users"
         assert_select "h2", "Top tickets"
         assert_select "h2", "Usage events"
+        assert_select "form[action=?]", admin_storage_test_path
         assert_select "a[href=?]", admin_root_path
       end
     end

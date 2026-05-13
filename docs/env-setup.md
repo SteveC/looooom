@@ -47,6 +47,8 @@ SENTRY_TRACES_SAMPLE_RATE=0.1
 
 `ADMIN_EMAIL` controls the `/admin` dashboard and admin navigation visibility. Set it to the exact Google account email that should operate the app.
 
+The admin dashboard includes a storage smoke test. In production, it tests Cloudflare R2 when `R2_BUCKET` is present or `ACTIVE_STORAGE_SERVICE=r2` is set. The test creates a 1-byte object, downloads it, and deletes it.
+
 ## Services
 
 Set up these external services as needed:

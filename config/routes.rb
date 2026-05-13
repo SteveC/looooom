@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: "dashboard#show"
     get "dashboard", to: "dashboard#show"
+    resource :storage_test, only: :create
   end
 
   authenticate :user, ->(user) { user.admin? } do
