@@ -11,5 +11,6 @@ class DashboardController < ApplicationController
     @usage_events = current_user.feature_usages.recent.group(:event_name).count
     @subscription = current_user.subscription
     @payments = current_user.payments.order(created_at: :desc).limit(5)
+    @billing_offers = BillingOffer.available
   end
 end

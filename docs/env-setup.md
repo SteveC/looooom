@@ -26,12 +26,6 @@ PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/lib/ruby/gems/4.0.0/bin:$PATH" bi
 STRIPE_SECRET_KEY=
 STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
-STRIPE_CURRENCY=usd
-STRIPE_ONE_TIME_AMOUNT_CENTS=
-STRIPE_ONE_TIME_PRODUCT_NAME=loom one-time payment
-STRIPE_SUBSCRIPTION_AMOUNT_CENTS=
-STRIPE_SUBSCRIPTION_PRODUCT_NAME=loom subscription
-STRIPE_SUBSCRIPTION_INTERVAL=month
 
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
@@ -70,8 +64,15 @@ Set up these external services as needed:
 Use live mode if this is the production Railway app.
 
 1. Set `STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` from live mode API keys.
-2. Set `STRIPE_CURRENCY`, `STRIPE_ONE_TIME_AMOUNT_CENTS`, and `STRIPE_SUBSCRIPTION_AMOUNT_CENTS`. Amounts are in the currency's smallest unit, so `1500` means 15.00 USD when `STRIPE_CURRENCY=usd`.
-3. Optionally set `STRIPE_ONE_TIME_PRODUCT_NAME`, `STRIPE_SUBSCRIPTION_PRODUCT_NAME`, and `STRIPE_SUBSCRIPTION_INTERVAL`. Checkout creates inline Stripe prices at session creation time with `price_data.unit_amount`, so no pre-created Stripe Product or Price IDs are required.
+2. Manage checkout offers in the `billing_offers` table. Amounts are in the currency's smallest unit, so `1500` means 15.00 USD when `currency=usd`.
+3. Checkout creates inline Stripe prices at session creation time with `price_data.unit_amount`, so no pre-created Stripe Product or Price IDs are required.
+
+Example production price update:
+
+```ruby
+BillingOffer.find_by!(key: "subscription").update!(amount_cents: 1200)
+```
+
 4. Add a webhook endpoint:
 
    ```text

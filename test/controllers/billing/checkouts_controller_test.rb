@@ -12,7 +12,9 @@ module Billing
       session = OpenStruct.new(id: "cs_live_one", url: "https://checkout.stripe.com/c/pay/cs_live_one")
       requests = nil
 
-      with_env("STRIPE_SECRET_KEY" => "sk_live_123", "STRIPE_ONE_TIME_AMOUNT_CENTS" => "1500") do
+      billing_offers(:one_time).update!(amount_cents: 2200, product_name: "loom custom support")
+
+      with_env("STRIPE_SECRET_KEY" => "sk_live_123") do
         stub_checkout_session(session) do |captured_requests|
           requests = captured_requests
           post billing_checkout_url(kind: "one_time")
@@ -27,15 +29,15 @@ module Billing
           {
             price_data: {
               currency: "usd",
-              product_data: { name: "loom one-time payment" },
-              unit_amount: 1500
+              product_data: { name: "loom custom support" },
+              unit_amount: 2200
             },
             quantity: 1
           }
         ],
         requests.first[:line_items]
       )
-      assert_equal({ user_id: @user.id, kind: "one_time", amount_cents: 1500, currency: "usd" }, requests.first[:metadata])
+      assert_equal({ user_id: @user.id, kind: "one_time", amount_cents: 2200, currency: "usd" }, requests.first[:metadata])
       assert_equal "stripe.checkout_started", @user.feature_usages.last.event_name
     end
 
@@ -43,7 +45,7 @@ module Billing
       session = OpenStruct.new(id: "cs_live_sub", url: "https://checkout.stripe.com/c/pay/cs_live_sub")
       requests = nil
 
-      with_env("STRIPE_SECRET_KEY" => "sk_live_123", "STRIPE_SUBSCRIPTION_AMOUNT_CENTS" => "900", "STRIPE_SUBSCRIPTION_INTERVAL" => "month") do
+      with_env("STRIPE_SECRET_KEY" => "sk_live_123") do
         stub_checkout_session(session) do |captured_requests|
           requests = captured_requests
           post billing_checkout_url(kind: "subscription")
@@ -69,13 +71,15 @@ module Billing
       assert_equal({ user_id: @user.id, kind: "subscription", amount_cents: 900, currency: "usd" }, requests.first[:subscription_data][:metadata])
     end
 
-    test "requires configured amount" do
-      with_env("STRIPE_SECRET_KEY" => "sk_live_123", "STRIPE_ONE_TIME_AMOUNT_CENTS" => nil) do
+    test "requires active checkout offer" do
+      billing_offers(:one_time).update!(active: false)
+
+      with_env("STRIPE_SECRET_KEY" => "sk_live_123") do
         post billing_checkout_url(kind: "one_time")
       end
 
       assert_redirected_to dashboard_url
-      assert_equal "one_time amount is not configured", flash[:alert]
+      assert_equal "Unknown checkout offer", flash[:alert]
     end
 
     private

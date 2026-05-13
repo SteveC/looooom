@@ -1,46 +1,6 @@
 class StripeCheckout
-  CheckoutConfig = Data.define(:mode, :amount_cents, :currency, :product_name, :recurring_interval, :success_message)
-
   def self.configured?
     ENV["STRIPE_SECRET_KEY"].present?
-  end
-
-  def self.config_for(kind)
-    case kind
-    when "one_time"
-      CheckoutConfig.new(
-        mode: "payment",
-        amount_cents: amount_cents("STRIPE_ONE_TIME_AMOUNT_CENTS"),
-        currency: currency,
-        product_name: ENV["STRIPE_ONE_TIME_PRODUCT_NAME"].presence || "loom one-time payment",
-        recurring_interval: nil,
-        success_message: "Thanks for supporting loom."
-      )
-    when "subscription"
-      CheckoutConfig.new(
-        mode: "subscription",
-        amount_cents: amount_cents("STRIPE_SUBSCRIPTION_AMOUNT_CENTS"),
-        currency: currency,
-        product_name: ENV["STRIPE_SUBSCRIPTION_PRODUCT_NAME"].presence || "loom subscription",
-        recurring_interval: ENV["STRIPE_SUBSCRIPTION_INTERVAL"].presence || "month",
-        success_message: "Subscription checkout started."
-      )
-    end
-  end
-
-  def self.price_configured?(kind)
-    config_for(kind)&.amount_cents.present?
-  end
-
-  def self.amount_cents(key)
-    value = ENV[key]
-    return if value.blank?
-
-    Integer(value, exception: false)
-  end
-
-  def self.currency
-    ENV["STRIPE_CURRENCY"].presence || "usd"
   end
 
   def initialize(user:, kind:, url_helpers:)
@@ -52,21 +12,20 @@ class StripeCheckout
   def create_session
     raise ArgumentError, "Stripe is not configured" unless self.class.configured?
 
-    config = self.class.config_for(kind)
-    raise ArgumentError, "Unknown checkout kind" unless config
-    raise ArgumentError, "#{kind} amount is not configured" unless valid_amount?(config.amount_cents)
+    offer = BillingOffer.available.find_by(key: kind)
+    raise ArgumentError, "Unknown checkout offer" unless offer
 
     customer_id = ensure_customer_id
 
     Stripe::Checkout::Session.create({
-      mode: config.mode,
+      mode: offer.mode,
       customer: customer_id,
       client_reference_id: user.id.to_s,
-      line_items: [ line_item(config) ],
+      line_items: [ line_item(offer) ],
       success_url: url_helpers.dashboard_url(checkout: "success"),
       cancel_url: url_helpers.dashboard_url(checkout: "cancelled"),
-      metadata: metadata,
-      subscription_data: subscription_data(config)
+      metadata: metadata(offer),
+      subscription_data: subscription_data(offer)
     }.compact)
   end
 
@@ -83,35 +42,31 @@ class StripeCheckout
     customer.id
   end
 
-  def metadata
+  def metadata(offer)
     {
       user_id: user.id,
-      kind: kind,
-      amount_cents: self.class.config_for(kind).amount_cents,
-      currency: self.class.config_for(kind).currency
+      kind: offer.key,
+      amount_cents: offer.amount_cents,
+      currency: offer.currency
     }
   end
 
-  def subscription_data(config)
-    return nil unless config.mode == "subscription"
+  def subscription_data(offer)
+    return nil unless offer.subscription?
 
-    { metadata: metadata }
+    { metadata: metadata(offer) }
   end
 
-  def line_item(config)
+  def line_item(offer)
     price_data = {
-      currency: config.currency,
+      currency: offer.currency,
       product_data: {
-        name: config.product_name
+        name: offer.product_name
       },
-      unit_amount: config.amount_cents
+      unit_amount: offer.amount_cents
     }
-    price_data[:recurring] = { interval: config.recurring_interval } if config.mode == "subscription"
+    price_data[:recurring] = { interval: offer.recurring_interval } if offer.subscription?
 
     { price_data: price_data, quantity: 1 }
-  end
-
-  def valid_amount?(amount_cents)
-    amount_cents.is_a?(Integer) && amount_cents.positive?
   end
 end

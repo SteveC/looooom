@@ -33,16 +33,13 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-          <% if StripeCheckout.price_configured?("one_time") %>
-            <%= button_to "One-time payment", billing_checkout_path(kind: "one_time"), method: :post, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
-          <% end %>
-          <% if StripeCheckout.price_configured?("subscription") %>
-            <%= button_to "Subscribe", billing_checkout_path(kind: "subscription"), method: :post, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
+          <% @billing_offers.each_with_index do |offer, index| %>
+            <%= button_to offer.button_label, billing_checkout_path(kind: offer.key), method: :post, class: "#{index.zero? ? "bg-slate-900 text-white hover:bg-slate-700" : "border border-slate-300 bg-white text-slate-900 hover:border-slate-400"} rounded-md px-4 py-3 text-sm font-semibold" %>
           <% end %>
         </div>
 
-        <% unless StripeCheckout.price_configured?("one_time") || StripeCheckout.price_configured?("subscription") %>
-          <p class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Stripe checkout amounts are not configured yet.</p>
+        <% unless @billing_offers.any? %>
+          <p class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Stripe checkout offers are not configured yet.</p>
         <% end %>
       </div>
     </div>

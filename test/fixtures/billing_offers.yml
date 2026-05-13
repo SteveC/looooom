@@ -1,0 +1,21 @@
+one_time:
+  key: one_time
+  mode: payment
+  amount_cents: 1500
+  currency: usd
+  product_name: loom one-time payment
+  button_label: One-time payment
+  recurring_interval:
+  active: true
+  position: 0
+
+subscription:
+  key: subscription
+  mode: subscription
+  amount_cents: 900
+  currency: usd
+  product_name: loom subscription
+  button_label: Subscribe
+  recurring_interval: month
+  active: true
+  position: 1

@@ -17,3 +17,30 @@ if ENV["ADMIN_EMAIL"].present?
     Rails.logger.info("Admin email configured; matching Google user will be promoted on first sign-in.")
   end
 end
+
+[
+  {
+    key: "one_time",
+    mode: "payment",
+    amount_cents: 1500,
+    currency: "usd",
+    product_name: "loom one-time payment",
+    button_label: "One-time payment",
+    recurring_interval: nil,
+    position: 0
+  },
+  {
+    key: "subscription",
+    mode: "subscription",
+    amount_cents: 900,
+    currency: "usd",
+    product_name: "loom subscription",
+    button_label: "Subscribe",
+    recurring_interval: "month",
+    position: 1
+  }
+].each do |attributes|
+  offer = BillingOffer.find_or_initialize_by(key: attributes.fetch(:key))
+  offer.assign_attributes(attributes) if offer.new_record?
+  offer.save!
+end

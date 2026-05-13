@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_131814) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_140835) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_131814) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "billing_offers", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.integer "amount_cents", null: false
+    t.string "button_label", null: false
+    t.datetime "created_at", null: false
+    t.string "currency", default: "usd", null: false
+    t.string "key", null: false
+    t.string "mode", null: false
+    t.integer "position", default: 0, null: false
+    t.string "product_name", null: false
+    t.string "recurring_interval"
+    t.datetime "updated_at", null: false
+    t.index ["active", "position"], name: "index_billing_offers_on_active_and_position"
+    t.index ["key"], name: "index_billing_offers_on_key", unique: true
   end
 
   create_table "feature_usages", force: :cascade do |t|
