@@ -25,4 +25,8 @@ class AuthPagesTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_select "#alert", "Use Google to sign in to loom."
   end
+
+  test "omniauth uses rails csrf verifier" do
+    assert_equal "OmniAuth::RailsCsrfProtection::TokenVerifier", OmniAuth.config.request_validation_phase.class.name
+  end
 end
