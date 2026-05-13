@@ -81,6 +81,11 @@ curl -fsS \
   "${APP_BASE_URL}/admin/evolution/runs.json"
 ```
 
+When the report uses `status: "succeeded"` or `status: "merged"` with a linked
+`ticket_id`, loom marks that ticket as `shipped`. The run summary and validation
+text are visible to users on the ticket page, so write them as concise public
+release notes. Do not include secrets, private logs, or internal-only metadata.
+
 Valid report fields are:
 
 ```yaml

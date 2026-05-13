@@ -15,6 +15,7 @@ class TicketsController < ApplicationController
   # GET /tickets/1 or /tickets/1.json
   def show
     @comments = @ticket.comments.visible.chronological.includes(:user)
+    @evolution_runs = @ticket.evolution_runs.latest
     @comment = @ticket.comments.new
   end
 

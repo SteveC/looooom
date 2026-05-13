@@ -10,6 +10,7 @@ class TicketCommentsController < ApplicationController
       redirect_to @ticket, notice: "Comment added."
     else
       @comments = @ticket.comments.visible.chronological.includes(:user)
+      @evolution_runs = @ticket.evolution_runs.latest
       render "tickets/show", status: :unprocessable_entity
     end
   end

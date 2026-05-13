@@ -50,6 +50,20 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "ticket page shows evolution run output" do
+    evolution_runs(:one).update!(
+      summary: "Fixed the contrast regression.",
+      validation: "bin/rails test test/models/evolution_run_test.rb"
+    )
+
+    get ticket_url(@ticket)
+
+    assert_response :success
+    assert_select "h2", "Implementation runs"
+    assert_select "p", text: /Fixed the contrast regression/
+    assert_select "p", text: /bin\/rails test test\/models\/evolution_run_test\.rb/
+  end
+
   test "should get edit" do
     get edit_ticket_url(@ticket)
     assert_response :success

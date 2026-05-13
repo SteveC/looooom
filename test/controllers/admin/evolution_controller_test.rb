@@ -32,6 +32,34 @@ module Admin
       assert_equal "opened_pr", EvolutionRun.last.status
     end
 
+    test "successful evolution run ships linked ticket" do
+      ticket = tickets(:one)
+      ticket.update!(status: "open")
+
+      with_env "EVOLUTION_RUNNER_TOKEN", "secret-runner-token" do
+        post admin_evolution_runs_url(format: :json),
+             params: { evolution_run: { ticket_id: ticket.id, status: "succeeded", branch_name: "main", summary: "Fixed the bug.", validation: "bin/rails test" } },
+             headers: { "Authorization" => "Bearer secret-runner-token" }
+      end
+
+      assert_response :created
+      assert_equal "shipped", ticket.reload.status
+    end
+
+    test "failed evolution run does not ship linked ticket" do
+      ticket = tickets(:one)
+      ticket.update!(status: "open")
+
+      with_env "EVOLUTION_RUNNER_TOKEN", "secret-runner-token" do
+        post admin_evolution_runs_url(format: :json),
+             params: { evolution_run: { ticket_id: ticket.id, status: "failed", branch_name: "main", summary: "Could not fix safely." } },
+             headers: { "Authorization" => "Bearer secret-runner-token" }
+      end
+
+      assert_response :created
+      assert_equal "open", ticket.reload.status
+    end
+
     private
 
     def with_env(key, value)

@@ -38,6 +38,42 @@
     <% end %>
   </div>
 
+  <% if @evolution_runs.any? %>
+    <section class="mt-10">
+      <h2 class="text-xl font-semibold tracking-tight">Implementation runs</h2>
+      <div class="mt-4 divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
+        <% @evolution_runs.each do |run| %>
+          <div class="p-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"><%= run.status.humanize %></span>
+                <% if run.branch_name.present? %>
+                  <span><%= run.branch_name %></span>
+                <% end %>
+              </div>
+              <span><%= time_ago_in_words(run.created_at) %> ago</span>
+            </div>
+
+            <% if run.summary.present? %>
+              <p class="mt-3 whitespace-pre-wrap leading-7 text-slate-800"><%= run.summary %></p>
+            <% end %>
+
+            <% if run.validation.present? %>
+              <div class="mt-3 rounded-md bg-slate-50 p-3">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Validation</p>
+                <p class="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700"><%= run.validation %></p>
+              </div>
+            <% end %>
+
+            <% if run.pull_request_url.present? %>
+              <%= link_to "Pull request", run.pull_request_url, class: "mt-3 inline-block text-sm font-medium text-slate-700 underline hover:text-slate-950" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
   <section class="mt-10">
     <h2 class="text-xl font-semibold tracking-tight">Discussion</h2>
     <div class="mt-4 divide-y divide-slate-200 rounded-md border border-slate-200 bg-white">
