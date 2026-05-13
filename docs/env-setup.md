@@ -36,7 +36,6 @@ CLOUDFLARE_API_TOKEN=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 ADMIN_EMAIL=
-ADMIN_PASSWORD=
 ADMIN_NAME=loom Admin
 
 SENTRY_DSN=
@@ -56,7 +55,7 @@ Set up these external services as needed:
 * Cloudflare Email Service for outbound mail
 * Stripe for billing
 * Sentry for optional error monitoring
-* Google OAuth app if social login is enabled
+* Google OAuth app for all user login
 
 ## Not Needed In The Rails App
 

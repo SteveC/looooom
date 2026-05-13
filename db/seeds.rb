@@ -8,10 +8,12 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-if ENV["ADMIN_EMAIL"].present? && ENV["ADMIN_PASSWORD"].present?
-  admin = User.find_or_initialize_by(email: ENV.fetch("ADMIN_EMAIL"))
-  admin.name = ENV.fetch("ADMIN_NAME", "loom Admin")
-  admin.password = ENV.fetch("ADMIN_PASSWORD") if admin.encrypted_password.blank?
-  admin.admin = true
-  admin.save!
+if ENV["ADMIN_EMAIL"].present?
+  admin = User.find_by(email: ENV.fetch("ADMIN_EMAIL"))
+
+  if admin
+    admin.update!(name: admin.name.presence || ENV.fetch("ADMIN_NAME", "loom Admin"), admin: true)
+  else
+    Rails.logger.info("Admin email configured; matching Google user will be promoted on first sign-in.")
+  end
 end

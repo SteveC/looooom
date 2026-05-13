@@ -34,8 +34,7 @@
             <%= link_to "Tickets", tickets_path, class: "hover:text-slate-950" %>
             <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "rounded-md bg-slate-900 px-3 py-2 text-white hover:bg-slate-700" %>
           <% else %>
-            <%= link_to "Sign in", new_user_session_path, class: "hover:text-slate-950" %>
-            <%= link_to "Sign up", new_user_registration_path, class: "rounded-md bg-slate-900 px-3 py-2 text-white hover:bg-slate-700" %>
+            <%= link_to "Sign in with Google", new_user_session_path, class: "rounded-md bg-slate-900 px-3 py-2 text-white hover:bg-slate-700" %>
           <% end %>
         </div>
       </nav>

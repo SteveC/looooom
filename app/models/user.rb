@@ -1,8 +1,8 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :trackable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
+  devise :database_authenticatable,
+         :rememberable, :validatable,
          :omniauthable, omniauth_providers: %i[google_oauth2]
 
   has_many :tickets, dependent: :destroy
@@ -12,11 +12,21 @@ class User < ApplicationRecord
   has_one :subscription, dependent: :destroy
 
   def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
-      user.email = auth.info.email
+    email = auth.info.email.to_s.downcase
+    user = find_by(provider: auth.provider, uid: auth.uid) || find_or_initialize_by(email: email)
+
+    user.tap do |user|
+      user.provider = auth.provider
+      user.uid = auth.uid
+      user.email = email
       user.name = auth.info.name.presence || auth.info.nickname
       user.password = Devise.friendly_token[0, 32] if user.encrypted_password.blank?
+      user.admin = true if admin_email?(user.email)
       user.save!
     end
+  end
+
+  def self.admin_email?(email)
+    ENV["ADMIN_EMAIL"].present? && email.to_s.casecmp?(ENV.fetch("ADMIN_EMAIL"))
   end
 end

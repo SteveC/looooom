@@ -10,8 +10,7 @@
         <%= link_to "Open dashboard", dashboard_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
         <%= link_to "Create ticket", new_ticket_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
       <% else %>
-        <%= link_to "Create account", new_user_registration_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
-        <%= link_to "Sign in", new_user_session_path, class: "rounded-md border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:border-slate-400" %>
+        <%= link_to "Sign in with Google", new_user_session_path, class: "rounded-md bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-700" %>
       <% end %>
     </div>
   </div>

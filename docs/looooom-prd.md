@@ -57,7 +57,7 @@ Build the foundation so that within 8-12 weeks the system can:
 | File Storage | Cloudflare R2 | S3-compatible via `aws-sdk-s3` and Active Storage. |
 | Email | Cloudflare Email Service | Public beta. Use `cloudflare-email` for Action Mailer if it remains viable. |
 | Payments | Stripe | Use `stripe-ruby` for subscriptions and one-time payments. |
-| Auth | Devise + OmniAuth | Email/password plus Google OAuth. |
+| Auth | Devise + OmniAuth | Google OAuth only for user-facing login. |
 | Deployment | Railway | Rails web process, worker process, Postgres, Redis. |
 | AI Coding Agents | Codex CLI outside the app | Runs externally against tickets and repo context. |
 | Monitoring | Railway logs, optional Sentry | Sentry is optional error monitoring. |
@@ -104,7 +104,7 @@ This document focuses on the Phase 1 and Phase 2 foundation so the system can be
 
 ## 4. Core MVP Features
 
-* User authentication: signup, login, Google OAuth.
+* User authentication through Google OAuth.
 * Dashboard with usage stats.
 * Ticket and feature request system.
 * Voting on tickets.
@@ -184,7 +184,6 @@ MAILER_FROM=hello@looooom.com
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
 ADMIN_EMAIL=...
-ADMIN_PASSWORD=...
 ADMIN_NAME=loom Admin
 SENTRY_DSN=...                         # Optional
 SENTRY_TRACES_SAMPLE_RATE=0.1          # Optional
